@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gnosis Freight — Weekly Market Intelligence</title>
+<style>
+  :root {
+    color-scheme: light;
+    --brand-blue: #1B6FEB;
+    --brand-blue-dark: #1359C5;
+    --brand-blue-light: #EEF4FF;
+    --brand-navy: #07132B;
+    --text-primary: #0D1B35;
+    --text-secondary: #4A5780;
+    --text-muted: #8896B0;
+    --bg-page: #F2F6FF;
+    --bg-card: #FFFFFF;
+    --border: #DDE4F0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #060E24 0%, #0D2050 55%, #1A4DB8 100%);
+    color: white;
+    padding: 28px 36px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(27,111,235,0.2) 0%, transparent 65%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; }
+  .logo-box {
+    width: 34px; height: 34px;
+    background: var(--brand-blue);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 14px; color: white; letter-spacing: -0.5px;
+  }
+  .logo-name { font-size: 17px; font-weight: 700; }
+  .logo-sub  { font-size: 11px; color: rgba(255,255,255,0.55); }
+  .week-pill {
+    background: rgba(27,111,235,0.22);
+    border: 1px solid rgba(27,111,235,0.45);
+    color: #93C5FD;
+    padding: 5px 13px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+  }
+  .header h1 {
+    font-size: 26px; font-weight: 800;
+    letter-spacing: -0.4px; line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .header h1 em { font-style: normal; color: #60A5FA; }
+  .header-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 20px; }
+  .kpi-row {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 16px;
+  }
+  .kpi { display: flex; flex-direction: column; }
+  .kpi-val { font-size: 22px; font-weight: 800; line-height: 1; }
+  .kpi-lbl { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 3px; }
+  .kpi-sep { width: 1px; background: rgba(255,255,255,0.12); align-self: stretch; }
+
+  /* ── LAYOUT ── */
+  .content { max-width: 1060px; margin: 0 auto; padding: 28px 20px; }
+
+  /* ── SECTION LABEL ── */
+  .sec-label {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 13px;
+  }
+  .sec-dot { width: 7px; height: 7px; background: var(--brand-blue); border-radius: 50%; }
+  .sec-title {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--brand-blue);
+  }
+
+  /* ── EXEC SUMMARY ── */
+  .exec-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--brand-blue);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 22px;
+  }
+  .exec-box h2 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  .theme { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+  .theme:last-child { margin-bottom: 0; }
+  .tnum {
+    background: var(--brand-blue); color: white;
+    width: 20px; height: 20px; border-radius: 50%;
+    font-size: 10px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .ttext { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+  .ttext strong { color: var(--text-primary); }
+
+  /* ── PRIORITY CARDS ── */
+  .prio-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .prio-card {
+    flex: 1; min-width: 200px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .prio-icon { font-size: 18px; flex-shrink: 0; }
+  .prio-lbl {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--text-muted); margin-bottom: 3px;
+  }
+  .prio-txt { font-size: 12px; font-weight: 500; color: var(--text-primary); line-height: 1.4; }
+
+  /* ── ARTICLE CARDS ── */
+  .cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    transition: box-shadow .15s, border-color .15s;
+  }
+  .card:hover { box-shadow: 0 4px 18px rgba(27,111,235,0.09); border-color: #C2D6F9; }
+  .card.r5 { border-left: 4px solid #1B6FEB; }
+  .card.r4 { border-left: 4px solid #4B8DF8; }
+  .card.r3 { border-left: 4px solid #93B8FD; }
+
+  .card-top {
+    padding: 16px 18px 0;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    flex-wrap: wrap; gap: 10px;
+  }
+  .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .rbadge {
+    display: flex; align-items: center; gap: 3px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+  }
+  .rbadge.r5 { background: #EEF4FF; color: #1B6FEB; border: 1px solid #BFDBFE; }
+  .rbadge.r4 { background: #F0F7FF; color: #4B8DF8; border: 1px solid #C7DCFD; }
+  .rbadge.r3 { background: #F6FAFF; color: #7AABFD; border: 1px solid #DBEAFE; }
+  .src-date { font-size: 11px; color: var(--text-muted); }
+  .read-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--brand-blue); font-size: 11px; font-weight: 600;
+    text-decoration: none; padding: 4px 11px;
+    border: 1px solid #BFDBFE; border-radius: 6px;
+    background: #F0F6FF; white-space: nowrap;
+    transition: all .15s; flex-shrink: 0;
+  }
+  .read-btn:hover { background: var(--brand-blue); color: white; border-color: var(--brand-blue); }
+
+  .card-body { padding: 11px 18px 16px; }
+  .card-headline { font-size: 14px; font-weight: 700; margin-bottom: 7px; line-height: 1.3; }
+  .card-summary { font-size: 12px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 10px; }
+
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  @media (max-width: 560px) { .card-grid { grid-template-columns: 1fr; } }
+
+  .detail {
+    background: #F8FAFF; border: 1px solid #ECF1FB;
+    border-radius: 7px; padding: 9px 11px;
+  }
+  .detail-lbl {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--text-muted); margin-bottom: 3px;
+  }
+  .detail-txt { font-size: 11.5px; color: var(--text-secondary); line-height: 1.45; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip {
+    background: var(--brand-blue-light); color: var(--brand-blue);
+    border: 1px solid #C7DCFD;
+    padding: 2px 8px; border-radius: 12px;
+    font-size: 10.5px; font-weight: 500;
+  }
+
+  /* ── COMPETITIVE ── */
+  .comp-box {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px 24px; margin-bottom: 24px;
+  }
+  .comp-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  .comp-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .comp-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .cbadge {
+    padding: 3px 9px; border-radius: 6px;
+    font-size: 10px; font-weight: 700;
+    white-space: nowrap; flex-shrink: 0; height: fit-content;
+  }
+  .cbadge.alert  { background: #FEE2E2; border: 1px solid #FECACA; color: #991B1B; }
+  .cbadge.watch  { background: #FEF3C7; border: 1px solid #FDE68A; color: #92400E; }
+  .cbadge.trend  { background: #EEF4FF; border: 1px solid #BFDBFE; color: #1e40af; }
+  .comp-txt { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+  .comp-txt strong { color: var(--text-primary); }
+
+  /* ── CONTENT TOPICS ── */
+  .topics-box {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px 24px; margin-bottom: 24px;
+  }
+  .topics-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  .tabs { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tab {
+    padding: 5px 13px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-secondary); transition: all .15s;
+  }
+  .tab.active { background: var(--brand-blue); color: white; border-color: var(--brand-blue); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .topic {
+    padding: 12px; border: 1px solid var(--border);
+    border-radius: 9px; margin-bottom: 8px; background: #FAFCFF;
+  }
+  .topic:last-child { margin-bottom: 0; }
+  .topic-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .topic-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .ttag {
+    background: #F0F6FF; border: 1px solid #DBEAFE;
+    color: var(--brand-blue); padding: 2px 7px;
+    border-radius: 4px; font-size: 10px; font-weight: 600;
+  }
+  .topic-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── ACTIONS ── */
+  .actions-box {
+    background: linear-gradient(135deg, #060E24 0%, #0C1E50 100%);
+    border-radius: 12px; padding: 22px 24px; color: white;
+  }
+  .actions-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  .action-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .act { display: flex; gap: 10px; align-items: flex-start; }
+  .apill {
+    padding: 2px 9px; border-radius: 12px;
+    font-size: 10px; font-weight: 700;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .apill.now  { background: #EF4444; color: white; }
+  .apill.week { background: rgba(27,111,235,0.35); color: #93C5FD; border: 1px solid rgba(27,111,235,0.4); }
+  .apill.mon  { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.12); }
+  .atxt { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.45; padding-top: 1px; }
+  .atxt strong { color: white; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center; padding: 20px;
+    font-size: 11px; color: var(--text-muted);
+    border-top: 1px solid var(--border); margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo-wrap">
+      <div class="logo-box">GF</div>
+      <div>
+        <div class="logo-name">Gnosis Freight</div>
+        <div class="logo-sub">Market Intelligence Report</div>
+      </div>
+    </div>
+    <div class="week-pill">Week of May 4–11, 2026</div>
+  </div>
+  <h1>Weekly <em>Market Intelligence</em> Brief</h1>
+  <div class="header-sub">Automated research run · Generated May 11, 2026 · Next run: May 18, 2026</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-val">9</div><div class="kpi-lbl">Articles Curated</div></div>
+    <div class="kpi-sep"></div>
+    <div class="kpi"><div class="kpi-val">2</div><div class="kpi-lbl">Must-Act (★★★★★)</div></div>
+    <div class="kpi-sep"></div>
+    <div class="kpi"><div class="kpi-val">3</div><div class="kpi-lbl">Competitor Signals</div></div>
+    <div class="kpi-sep"></div>
+    <div class="kpi"><div class="kpi-val">8</div><div class="kpi-lbl">Content Ideas</div></div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- EXEC SUMMARY -->
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-title">Executive Summary</div></div>
+  <div class="exec-box">
+    <h2>Three themes dominated this week:</h2>
+    <div class="theme">
+      <div class="tnum">1</div>
+      <div class="ttext"><strong>FourKites made an aggressive two-part push into ocean freight execution</strong> — launching Booking Connect for Ocean (May 4) and Inventory Twin enhancements (May 5) at the Gartner Supply Chain Symposium. They are now explicitly competing in ocean container lifecycle automation — Gnosis's core territory — and their "industry's first" claim needs a direct response.</div>
+    </div>
+    <div class="theme">
+      <div class="tnum">2</div>
+      <div class="ttext"><strong>Agentic AI dominated the industry conversation</strong>, validated by Microsoft, Gartner, and major publications. Gartner predicts 60% of supply chain disruptions will be resolved without human intervention by 2031. The market is primed — Gnosis needs to insert its voice loudly and specifically.</div>
+    </div>
+    <div class="theme">
+      <div class="tnum">3</div>
+      <div class="ttext"><strong>Amazon entered the $1.3T 3PL market</strong> via Amazon Supply Chain Services, creating disruption and urgency for Gnosis's LSP/3PL customers who now face new competitive pressure and need smarter freight tech to differentiate.</div>
+    </div>
+  </div>
+
+  <!-- PRIORITIES -->
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-title">Top Priorities This Week</div></div>
+  <div class="prio-row">
+    <div class="prio-card">
+      <div class="prio-icon">⚡</div>
+      <div><div class="prio-lbl">Immediate</div><div class="prio-txt">Counter FourKites' ocean booking launch with primary-source data differentiation messaging</div></div>
+    </div>
+    <div class="prio-card">
+      <div class="prio-icon">✍️</div>
+      <div><div class="prio-lbl">This Week</div><div class="prio-txt">Publish agentic AI thought leadership while Gartner Symposium attention is still hot</div></div>
+    </div>
+    <div class="prio-card">
+      <div class="prio-icon">📣</div>
+      <div><div class="prio-lbl">This Week</div><div class="prio-txt">Create urgency content around Section 301 tariff uncertainty → freight visibility</div></div>
+    </div>
+  </div>
+
+  <!-- ARTICLES -->
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-title">Articles & News — Sorted by Relevance</div></div>
+  <div class="cards">
+
+    <div class="card r5">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r5">★★★★★ &nbsp;5/5 — Must Act</span>
+          <span class="src-date">FourKites Press Room · May 4, 2026</span>
+        </div>
+        <a class="read-btn" href="https://www.fourkites.com/press/booking-connect-ocean-agentic-freight-booking/" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">FourKites Launches Agentic Ocean Booking Platform</div>
+        <div class="card-summary">FourKites announced Booking Connect for Ocean, claiming it is "the industry's first fully agentic ocean freight booking platform." It automates carrier selection, rate management, document handling, and exception resolution for containerized ocean freight. Demonstrated live at Gartner Supply Chain Symposium May 4–6 in Orlando.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">Direct competitive move into ocean container lifecycle automation — Gnosis's core territory. The "industry's first" claim is contestable. Key counter: primary-source data (ports, terminals, carriers, Class I railroads) vs. FourKites' aggregated model.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">Competitive battlecard update · Executive LinkedIn post on data source differentiation · Sales team briefing · Counter-messaging on data quality vs. aggregated visibility</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">freight management software</span><span class="chip">container</span><span class="chip">ocean freight</span><span class="chip">freight visibility</span><span class="chip">supply chain execution</span><span class="chip">3PL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card r5">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r5">★★★★★ &nbsp;5/5 — Must Act</span>
+          <span class="src-date">FourKites Press Room · May 5, 2026</span>
+        </div>
+        <a class="read-btn" href="https://www.fourkites.com/press/inventory-twin-supply-chain-planning-execution/" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">FourKites Bridges the Gap Between Supply Chain Planning and Execution With AI-Powered Inventory Twin Enhancements</div>
+        <div class="card-summary">FourKites enhanced Inventory Twin to detect projected stockouts and automatically trigger freight booking through Booking Connect, reducing resolution time from hours to under five minutes. Creates an autonomous closed loop from inventory signal to carrier booking with no manual handoffs.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">FourKites is building a closed-loop execution system directly mirroring Gnosis's value proposition. Inventory velocity is a core ICP pain point. Gnosis must counter with primary-source data advantage — earlier, more accurate signals than aggregated models.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">Sales enablement "how Gnosis compares" one-pager · LinkedIn post on data quality in freight execution · Webinar: "Why data source matters for inventory velocity"</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">freight visibility</span><span class="chip">supply chain execution</span><span class="chip">inventory velocity</span><span class="chip">freight management software</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card r4">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r4">★★★★☆ &nbsp;4/5 — Important</span>
+          <span class="src-date">Microsoft Dynamics 365 Blog · May 4, 2026</span>
+        </div>
+        <a class="read-btn" href="https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/05/04/from-intelligence-to-impact-how-agentic-ai-is-reshaping-todays-supply-chain/" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">From Intelligence to Impact: How Agentic AI Is Reshaping Today's Supply Chain</div>
+        <div class="card-summary">Microsoft's VP of Dynamics 365 AI ERP published a piece timed to the Gartner Supply Chain Symposium on agentic AI moving supply chains from reactive to proactive. Key stat: Gartner predicts 60% of supply chain disruptions will be resolved without human intervention by 2031.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">Microsoft is using the exact language Gnosis uses — "execution," "agentic AI," "resolving disruptions automatically" — and reaching Gnosis's ICP at scale. Validates AI-native positioning with a Gartner stat worth amplifying.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">LinkedIn post reacting to the Gartner 60% stat · Blog: "From visibility to execution: What the agentic supply chain really requires" · Executive briefing for VP-level prospects</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">supply chain execution</span><span class="chip">agentic AI</span><span class="chip">freight management</span><span class="chip">shipping delays</span><span class="chip">port congestion</span><span class="chip">3PL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card r4">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r4">★★★★☆ &nbsp;4/5 — Important</span>
+          <span class="src-date">Logistics Viewpoints · May 5, 2026</span>
+        </div>
+        <a class="read-btn" href="https://logisticsviewpoints.com/2026/05/05/amazon-launches-supply-chain-services-leveraging-its-global-logistics-network/" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">Amazon Launches Supply Chain Services (ASCS), Opening Its Logistics Network to All Businesses</div>
+        <div class="card-summary">Amazon officially launched Amazon Supply Chain Services, decoupling its logistics infrastructure (ocean, air, ground, rail + fulfillment + parcel) from its retail marketplace and opening it to any business. Early adopters: P&amp;G, 3M, Lands' End, American Eagle. Platform targets the $1.3T 3PL market.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">Gnosis's LSP/3PL customers now face a new, well-capitalized competitor. Traditional 3PLs must differentiate on smarter tech — exactly what Gnosis enables. Also a buying trigger for Retailer/Manufacturer ICP who need unified visibility across multiple freight networks.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">LinkedIn: "What Amazon's 3PL launch means for freight visibility" · Webinar: "How LSPs compete in the Amazon era" · Sales talking point for 3PL prospects</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">3PL</span><span class="chip">freight management</span><span class="chip">supply chain execution</span><span class="chip">ocean</span><span class="chip">rail</span><span class="chip">drayage</span><span class="chip">container</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card r4">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r4">★★★★☆ &nbsp;4/5 — Important</span>
+          <span class="src-date">USTR / Morgan Lewis · May 5–8, 2026</span>
+        </div>
+        <a class="read-btn" href="https://www.morganlewis.com/pubs/2026/04/why-ustrs-latest-section-301-actions-matter-for-your-supply-chain" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">Section 301 Tariff Hearings on Manufacturing Overcapacity (May 5–8)</div>
+        <div class="card-summary">USTR conducted public hearings May 5–8 on new Section 301 investigations covering 16 economies including China, EU, Mexico, Vietnam, and Taiwan for manufacturing overcapacity. Tariff decisions expected before July 24, 2026. Semiconductors, steel, chemicals, batteries, and machinery all in scope.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">Trade policy uncertainty is a primary buying trigger for Gnosis's entire ICP. When shippers face unpredictable tariff environments, real-time container visibility, accurate ETAs, and demurrage management become acute needs. July 24 deadline creates urgency now.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">LinkedIn: "Tariff uncertainty is why freight visibility is non-negotiable" · Email nurture on supply chain resilience · Blog: "How agentic freight platforms help shippers navigate trade volatility"</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">shipping delays</span><span class="chip">port congestion</span><span class="chip">freight management</span><span class="chip">first-mile shipping</span><span class="chip">drayage</span><span class="chip">import/export operations</span><span class="chip">demurrage</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card r3">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r3">★★★☆☆ &nbsp;3/5 — Useful Signal</span>
+          <span class="src-date">Supply Chain Dive · May 2026</span>
+        </div>
+        <a class="read-btn" href="https://www.supplychaindive.com/spons/why-agentic-ai-is-emerging-as-the-next-layer-of-the-modern-tms/816431/" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">Why Agentic AI Is Emerging as the Next Layer of the Modern TMS</div>
+        <div class="card-summary">Supply Chain Dive published a piece arguing that agentic AI is becoming embedded in Transportation Management Systems — moving beyond copilots to autonomous execution covering exception resolution, carrier follow-up, and booking automation. ICP reads this publication regularly.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">Validates market vocabulary shift toward "agentic" and "execution." TMS vendors may try to absorb freight visibility — a competitive pressure to monitor. Gnosis's target buyers are reading this right now.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">Market research for content planning · Validates Gnosis messaging direction · Draft LinkedIn post engaging with this theme from Gnosis's POV</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">freight management software</span><span class="chip">supply chain execution</span><span class="chip">3PL</span><span class="chip">logistics service provider</span><span class="chip">agentic AI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card r3">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r3">★★★☆☆ &nbsp;3/5 — Useful Signal</span>
+          <span class="src-date">Industry Wire · May 2026</span>
+        </div>
+        <a class="read-btn" href="https://www.dailyoilfutures.com/archives/12626" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">3PL Services Accelerate Automation and Agentic AI to Build Smarter Supply Chains</div>
+        <div class="card-summary">Industry coverage of 3PL providers accelerating AI adoption under competitive pressure. AI is elevating brokerage, cross-border, and managed transportation through smarter rating, predictive visibility, automated compliance, and faster exception resolution.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">Gnosis's 3PL/LSP segment is being pushed toward AI investment faster than ever. 3PL decision-makers are being told by analysts and media they must adopt freight intelligence platforms — Gnosis should be visible in this conversation.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">Sales messaging for 3PL segment: "built to make your team more competitive" · LinkedIn content targeting LSP audience</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">3PL</span><span class="chip">logistics service provider</span><span class="chip">freight management</span><span class="chip">supply chain execution</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card r3">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r3">★★★☆☆ &nbsp;3/5 — Useful Signal</span>
+          <span class="src-date">Logistics Viewpoints · May 8, 2026</span>
+        </div>
+        <a class="read-btn" href="https://logisticsviewpoints.com/2026/05/08/supply-chain-and-logistics-news-week-of-may-7th-2026/" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">Supply Chain and Logistics News — Week of May 7th, 2026</div>
+        <div class="card-summary">Weekly industry roundup confirming FourKites and Amazon ASCS were the two biggest stories of the week in logistics tech. Notes the industry is in a transition from "insight to execution." Read by supply chain technology buyers and analysts — exactly Gnosis's ICP.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">Confirms what Gnosis's prospects are reading this week. Validates prioritizing FourKites and Amazon ASCS in competitive monitoring and response content immediately.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">Temperature check for ICP reading habits · Track for future sourcing · Monitor which stories receive the most follow-on coverage week-over-week</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">supply chain</span><span class="chip">logistics</span><span class="chip">freight management</span><span class="chip">3PL</span><span class="chip">freight visibility</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card r3">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="rbadge r3">★★★☆☆ &nbsp;3/5 — Useful Signal</span>
+          <span class="src-date">Talking Logistics · May 8, 2026</span>
+        </div>
+        <a class="read-btn" href="https://talkinglogistics.com/2026/05/08/above-the-fold-supply-chain-logistics-news-may-8-2026/" target="_blank">Read Article →</a>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">Above the Fold: Supply Chain Logistics News (May 8, 2026)</div>
+        <div class="card-summary">Weekly wrap-up for VP/Director-level logistics leaders covering Amazon ASCS, FourKites Booking Connect, agentic AI momentum, and macro freight market conditions. Talking Logistics is a key publication for exactly Gnosis's senior decision-maker ICP.</div>
+        <div class="card-grid">
+          <div class="detail"><div class="detail-lbl">Why It Matters</div><div class="detail-txt">Reaches senior supply chain decision-makers — exactly Gnosis's ICP. Consistent appearance of agentic AI and freight execution themes confirms these are not flash-in-the-pan topics for this audience.</div></div>
+          <div class="detail"><div class="detail-lbl">Suggested Use</div><div class="detail-txt">Monitor as bellwether for ICP reading habits · Consider pitching Gnosis executive for a Talking Logistics interview or sponsored content opportunity</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">supply chain</span><span class="chip">freight management</span><span class="chip">logistics</span><span class="chip">3PL</span><span class="chip">agentic AI</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /cards -->
+
+  <!-- COMPETITIVE -->
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-title">Competitive & Market Signals</div></div>
+  <div class="comp-box">
+    <h3>What to Watch</h3>
+    <div class="comp-row">
+      <span class="cbadge alert">🚨 ALERT</span>
+      <div class="comp-txt"><strong>FourKites had a deliberate two-release product week at Gartner Supply Chain Symposium.</strong> Their messaging framework — inventory → booking → shipment tracking as a closed loop — directly mirrors the lifecycle Gnosis addresses. Their "industry's first" claim on agentic ocean booking needs a direct counter. Key differentiator: FourKites aggregates and infers data. Gnosis originates from primary sources. When disruption peaks, that gap is largest and most consequential for shippers.</div>
+    </div>
+    <div class="comp-row">
+      <span class="cbadge alert">🚨 ALERT</span>
+      <div class="comp-txt"><strong>Amazon ASCS is a structural market shift for 3PLs.</strong> It will accelerate tech investment among Gnosis's LSP customer segment and could be a forcing function for 3PLs to upgrade their freight visibility stack immediately. Early adopters: P&G, 3M, Lands' End, American Eagle. Each of these is also in Gnosis's Retailer/Manufacturer ICP.</div>
+    </div>
+    <div class="comp-row">
+      <span class="cbadge trend">📈 TREND</span>
+      <div class="comp-txt"><strong>Gartner Supply Chain Symposium (May 4–6) established "agentic AI" as mainstream vocabulary</strong> for VP/C-suite supply chain leaders. Microsoft, FourKites, and others all presented on this theme. Gnosis should engage this audience now through post-symposium content while the conversation is active and the Gartner 60% stat is circulating.</div>
+    </div>
+    <div class="comp-row">
+      <span class="cbadge watch">👁 WATCH</span>
+      <div class="comp-txt"><strong>Section 301 tariff decisions due by July 24, 2026.</strong> Geopolitical freight disruptions (Red Sea, Strait of Hormuz) continue adding transit time and rate volatility. Gnosis's core buying triggers — port congestion, shipping delays, demurrage costs, drayage delays — are highly active through the end of Q3. This is a sustained demand window, not a temporary spike.</div>
+    </div>
+    <div class="comp-row">
+      <span class="cbadge watch">👁 WATCH</span>
+      <div class="comp-txt"><strong>Project44</strong> maintained its position as the "data-for-press" credibility player, cited in disruption coverage for supply chain visibility data. Watch for them to make product announcements in response to FourKites' ocean execution push — they will not cede that ground quietly.</div>
+    </div>
+  </div>
+
+  <!-- CONTENT TOPICS -->
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-title">Suggested Content Topics</div></div>
+  <div class="topics-box">
+    <h3>Content Recommendations</h3>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab(event,'social')">⚡ Quick-Hit LinkedIn</button>
+      <button class="tab" onclick="showTab(event,'blog')">📝 Blog / SEO</button>
+      <button class="tab" onclick="showTab(event,'big')">🎙 Thought Leadership</button>
+    </div>
+
+    <div id="tab-social" class="panel active">
+      <div class="topic">
+        <div class="topic-title">Counter FourKites' "Industry's First" Ocean Booking Claim</div>
+        <div class="topic-tags"><span class="ttag">LinkedIn Post</span><span class="ttag">Executive Voice</span><span class="ttag">Publish Now</span></div>
+        <div class="topic-desc">Angle: "Everyone's talking about agentic AI in ocean freight. But agentic AI is only as good as the data it runs on. If your platform sources milestones from aggregators rather than directly from ports, terminals, and Class I railroads — you're building automation on stale data." Target: VP/Director Supply Chain at enterprise retailers, manufacturers, and 3PLs.</div>
+      </div>
+      <div class="topic">
+        <div class="topic-title">Tariff Uncertainty → Freight Visibility Is Now Non-Negotiable</div>
+        <div class="topic-tags"><span class="ttag">LinkedIn Post</span><span class="ttag">Timely</span><span class="ttag">Publish This Week</span></div>
+        <div class="topic-desc">Angle: "With Section 301 tariff decisions coming before July 24 — and effective tariff rates still in flux — enterprise shippers need to know exactly where every container is, what's in it, and when it's landing. Trade policy uncertainty is a reminder that freight visibility isn't a nice-to-have." Target: VP Logistics/Import-Export at retailers and manufacturers.</div>
+      </div>
+      <div class="topic">
+        <div class="topic-title">Amazon's 3PL Launch: What It Means for Logistics Service Providers</div>
+        <div class="topic-tags"><span class="ttag">LinkedIn Post</span><span class="ttag">3PL Audience</span><span class="ttag">Publish This Week</span></div>
+        <div class="topic-desc">Angle: "Amazon just entered the $1.3T 3PL market. The LSPs that win won't be the ones with the most trucks — they'll be the ones with the best data and the smartest execution tools. The right freight operating system is how LSPs differentiate." Target: LSP/3PL directors and VPs who are already reading about this story everywhere.</div>
+      </div>
+    </div>
+
+    <div id="tab-blog" class="panel">
+      <div class="topic">
+        <div class="topic-title">What "Agentic AI in Freight" Actually Means — and Why Your Data Source Changes Everything</div>
+        <div class="topic-tags"><span class="ttag">Long-Form Blog</span><span class="ttag">SEO Priority</span><span class="ttag">Next 2 Weeks</span></div>
+        <div class="topic-desc">Demystify "agentic AI" for freight, then explain why primary-source data (ports, terminals, carriers) is the prerequisite for agents that actually work vs. aggregated models. SEO targets: "freight management software," "container tracking software," "AI freight visibility." Supporting: Microsoft Gartner blog, FourKites launch, Gartner 60% stat.</div>
+      </div>
+      <div class="topic">
+        <div class="topic-title">How Enterprise Shippers Can Protect Inventory Velocity During Tariff Uncertainty</div>
+        <div class="topic-tags"><span class="ttag">Blog + Email</span><span class="ttag">ICP-Direct</span><span class="ttag">Next 2 Weeks</span></div>
+        <div class="topic-desc">Practical guide mapping real-time container visibility, accurate ETA predictions, and demurrage management to inventory velocity protection during trade policy uncertainty. SEO targets: "freight visibility," "supply chain execution," "container tracking software," "inventory velocity." Map Gnosis features to each ICP pain point concretely.</div>
+      </div>
+      <div class="topic">
+        <div class="topic-title">Why Amazon Entering 3PL Should Make LSPs Rethink Their Tech Stack</div>
+        <div class="topic-tags"><span class="ttag">Blog</span><span class="ttag">3PL Segment</span><span class="ttag">Next 2 Weeks</span></div>
+        <div class="topic-desc">Amazon's entry commoditizes transactional logistics. LSPs that win will differentiate on intelligent execution, real-time visibility, and client satisfaction. Position Gnosis as the freight operating system that gives LSPs a data and execution edge over Amazon's commoditized offering.</div>
+      </div>
+    </div>
+
+    <div id="tab-big" class="panel">
+      <div class="topic">
+        <div class="topic-title">Webinar: From Port to Payment — Automating the Container Lifecycle in the Age of Trade Volatility</div>
+        <div class="topic-tags"><span class="ttag">45-min Webinar</span><span class="ttag">Live Demo</span><span class="ttag">Q2 2026</span></div>
+        <div class="topic-desc">Walk through the full container lifecycle (ocean, port, rail, inland) and show how automation resolves demurrage, delays, and drayage visibility when trade policy is volatile. Include live demo of Gnosis CLM and Marlo® Container Tracking Engine. Target: VP/Director Supply Chain at retailers and manufacturers importing 500+ containers/year.</div>
+      </div>
+      <div class="topic">
+        <div class="topic-title">Executive Content Series: The Data Foundation for AI-Native Freight</div>
+        <div class="topic-tags"><span class="ttag">3-Part LinkedIn Series</span><span class="ttag">Executive Voice</span><span class="ttag">Q2 2026</span></div>
+        <div class="topic-desc">Three LinkedIn articles from Gnosis CTO or CEO: (1) Why data provenance matters in freight AI; (2) What autonomous freight execution actually requires; (3) How to evaluate "agentic" vendor claims. Positions Gnosis's sovereign, primary-source data infrastructure as the differentiator when every player is claiming "agentic."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-title">Recommended Next Actions</div></div>
+  <div class="actions-box">
+    <h3>Action Plan</h3>
+    <ul class="action-list">
+      <li class="act"><span class="apill now">NOW</span><span class="atxt"><strong>Brief sales team on FourKites Booking Connect for Ocean</strong> — update competitive battlecard with counter-messaging on data provenance and primary-source infrastructure vs. aggregated models</span></li>
+      <li class="act"><span class="apill now">NOW</span><span class="atxt"><strong>Draft executive LinkedIn post</strong> responding to the agentic AI narrative from Gartner Symposium — insert Gnosis into the conversation while it's still active this week</span></li>
+      <li class="act"><span class="apill week">THIS WEEK</span><span class="atxt"><strong>Draft LinkedIn post on Section 301 tariff uncertainty → freight visibility urgency</strong> — timing is perfect while hearings just concluded and July 24 deadline is top of mind</span></li>
+      <li class="act"><span class="apill week">THIS WEEK</span><span class="atxt"><strong>Assign blog: "What Agentic AI in Freight Actually Means"</strong> — the single most important content investment given the market moment; target 1,200–1,800 words with SEO focus</span></li>
+      <li class="act"><span class="apill mon">MONITOR</span><span class="atxt"><strong>Watch FourKites and Project44</strong> for follow-on announcements — FourKites appears to be in a deliberate product launch cadence; Project44 may respond</span></li>
+      <li class="act"><span class="apill mon">MONITOR</span><span class="atxt"><strong>Track Amazon ASCS adoption and coverage</strong> — will shape 3PL buying behavior across Q2–Q3 and affect Gnosis's LSP customer conversations</span></li>
+      <li class="act"><span class="apill mon">CALENDAR</span><span class="atxt"><strong>Mark July 24 tariff decision deadline</strong> — prepare reactive content for that week; it will be a high-urgency moment for Gnosis's entire ICP</span></li>
+    </ul>
+  </div>
+
+</div><!-- /content -->
+
+<div class="footer">
+  Gnosis Freight Market Intelligence &nbsp;·&nbsp; Research conducted May 11, 2026 &nbsp;·&nbsp; Next run: May 18, 2026<br>
+  Sources: FourKites Newsroom · Logistics Viewpoints · Supply Chain Dive · Microsoft Dynamics 365 Blog · Talking Logistics · Morgan Lewis · Amazon Press Center
+</div>
+
+<script>
+function showTab(e, tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  e.target.classList.add('active');
+}
+</script>
+</body>
+</html>
