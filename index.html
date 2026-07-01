@@ -3,265 +3,1642 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gnosis Freight — Weekly Intel Brief | June 16–22, 2026</title>
+<title>Gnosis Freight Intelligence Dashboard</title>
 <style>
-  :root{
-    --navy1:#07132B; --navy2:#0D2254; --blue:#1B6FEB; --blue-soft:#2f86ff;
-    --ink:#ffffff; --muted:#aebfe0; --card:#0e1e44;
-    --chip:#16306b; --line:#1d335f;
-    --green:#27c08a; --amber:#f5b13d; --red:#ff6b6b;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:linear-gradient(160deg,var(--navy1) 0%,var(--navy2) 100%);
-    color:var(--ink);min-height:100vh;line-height:1.55;padding:0 0 80px;
-  }
-  .wrap{max-width:1060px;margin:0 auto;padding:0 22px}
-  header{padding:46px 22px 30px;text-align:center;border-bottom:1px solid var(--line);
-    background:radial-gradient(900px 240px at 50% -40px,rgba(27,111,235,.28),transparent)}
-  .badge{display:inline-block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--blue-soft);border:1px solid var(--line);padding:6px 14px;border-radius:999px;margin-bottom:16px}
-  h1{font-size:34px;font-weight:800;letter-spacing:-.5px}
-  h1 span{color:var(--blue-soft)}
-  .sub{color:var(--muted);margin-top:8px;font-size:15px}
-  h2{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue-soft);
-    margin:46px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--line)}
-  .summary{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
-  .summary ol{margin:0 0 6px 20px}
-  .summary li{margin-bottom:12px;color:#e7eefc}
-  .summary li b{color:#fff}
-  .ops{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
-  .ops .box{background:#0b1838;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
-  .ops .box h3{font-size:13px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
-  .ops .opp h3{color:var(--green)} .ops .risk h3{color:var(--amber)}
-  .ops .box p{color:var(--muted);font-size:14px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:16px;
-    transition:transform .15s ease,border-color .15s ease}
-  .card:hover{transform:translateY(-2px);border-color:var(--blue)}
-  .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-  .card h3{font-size:19px;font-weight:700;line-height:1.3}
-  .card h3 a{color:#fff;text-decoration:none}
-  .card h3 a:hover{color:var(--blue-soft)}
-  .meta{color:var(--muted);font-size:13px;margin:4px 0 12px}
-  .stars{white-space:nowrap;font-size:15px;color:var(--amber)}
-  .stars .off{color:#33446b}
-  .card p.body{color:#dce6fb;font-size:14.5px;margin-bottom:14px}
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{background:var(--chip);border:1px solid var(--line);color:#bcd0f7;font-size:12px;
-    padding:5px 11px;border-radius:999px}
-  .why{margin-top:12px;font-size:13.5px;color:var(--muted);border-left:3px solid var(--blue);padding-left:12px}
-  .why b{color:#cfe0ff}
-  .signal{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
-    border-radius:12px;padding:16px 18px;margin-bottom:12px}
-  .sigbadge{flex:none;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-    padding:5px 10px;border-radius:6px;margin-top:2px}
-  .b-comp{background:rgba(255,107,107,.16);color:var(--red);border:1px solid rgba(255,107,107,.4)}
-  .b-trend{background:rgba(245,177,61,.16);color:var(--amber);border:1px solid rgba(245,177,61,.4)}
-  .b-macro{background:rgba(39,192,138,.16);color:var(--green);border:1px solid rgba(39,192,138,.4)}
-  .signal p{font-size:14px;color:#dce6fb}
-  .signal p b{color:#fff}
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-  .tab{background:#0b1838;border:1px solid var(--line);color:var(--muted);padding:9px 18px;border-radius:999px;
-    cursor:pointer;font-size:14px;font-weight:600}
-  .tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-  .panel{display:none} .panel.active{display:block}
-  .idea{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:12px}
-  .idea h4{font-size:16px;margin-bottom:8px;color:#fff}
-  .idea .row{font-size:13.5px;color:var(--muted);margin-bottom:5px}
-  .idea .row b{color:#bcd0f7}
-  .action{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
-    border-radius:12px;padding:15px 18px;margin-bottom:10px}
-  .num{flex:none;width:30px;height:30px;border-radius:8px;background:var(--blue);color:#fff;font-weight:700;
-    display:flex;align-items:center;justify-content:center;font-size:14px}
-  .action p{font-size:14.5px;color:#dce6fb}
-  .action p b{color:#fff}
-  footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:50px;padding-top:22px;border-top:1px solid var(--line)}
-  @media(max-width:680px){.ops{grid-template-columns:1fr}h1{font-size:26px}}
+:root {
+  --bg: #0a1628;
+  --card: #0f2044;
+  --card2: #162447;
+  --border: #1e3a6e;
+  --text: #e8edf5;
+  --text2: #a8b8d8;
+  --text3: #6b84b0;
+  --accent: #1e90ff;
+  --green: #10b981;
+  --red: #e74c3c;
+  --orange: #f39c12;
+  --blue: #3498db;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  background: linear-gradient(135deg, #0a1628 0%, #0f2040 100%);
+  border-bottom: 2px solid var(--accent);
+  padding: 18px 32px;
+  display: flex; align-items: center; gap: 16px;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo {
+  width: 42px; height: 42px; background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 15px; color: #fff; flex-shrink: 0;
+}
+.header-text h1 { font-size: 20px; font-weight: 700; }
+.header-text p { font-size: 12px; color: var(--text2); }
+.week-pill {
+  margin-left: auto; background: rgba(30,144,255,0.15); border: 1px solid rgba(30,144,255,0.4);
+  color: #93c5fd; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+}
+
+.tabs-nav {
+  background: #0d1e3a; border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto; padding: 0 24px;
+}
+.tab-btn {
+  background: none; border: none; border-bottom: 3px solid transparent;
+  color: var(--text2); cursor: pointer; font-size: 13px; font-weight: 500;
+  padding: 14px 20px; white-space: nowrap; transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.tab-pane { display: none; padding: 28px 32px; max-width: 1100px; }
+.tab-pane.active { display: block; }
+
+.section { margin-bottom: 36px; }
+.section-title {
+  font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;
+}
+.section-title span { color: var(--text2); font-weight: 400; font-size: 13px; }
+
+.kpis { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 20px; }
+.kpi {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 22px; text-align: center; min-width: 110px;
+}
+.kpi-num { font-size: 30px; font-weight: 800; color: var(--accent); line-height: 1; }
+.kpi-label { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+.theme-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+.theme-num {
+  width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0; color: #fff; margin-top: 2px;
+}
+.theme-body { font-size: 13px; color: var(--text2); }
+.theme-body strong { color: var(--text); }
+
+.top-story-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--border);
+}
+.top-story-card.critical { border-left-color: var(--red); }
+.top-story-card.important { border-left-color: var(--orange); }
+.story-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
+.story-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.story-source { font-size: 11px; color: var(--text3); }
+
+.rating-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; white-space: nowrap;
+}
+.r5 { background: rgba(231,76,60,0.15); color: #f87171; border: 1px solid rgba(231,76,60,0.3); }
+.r4 { background: rgba(243,156,18,0.15); color: #fbbf24; border: 1px solid rgba(243,156,18,0.3); }
+.r3 { background: rgba(52,152,219,0.15); color: #93c5fd; border: 1px solid rgba(52,152,219,0.3); }
+
+.article-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 12px; overflow: hidden; page-break-inside: avoid;
+}
+.article-header { padding: 16px; cursor: pointer; }
+.article-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+.source-label { font-size: 11px; color: var(--text3); }
+.date-label { font-size: 11px; color: var(--text3); }
+.article-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.article-summary { font-size: 13px; color: var(--text2); }
+.expand-toggle {
+  font-size: 11px; color: var(--text3); cursor: pointer; margin-top: 8px;
+  display: inline-block; user-select: none;
+}
+.expand-toggle:hover { color: var(--accent); }
+.article-expand { background: #0d1e3a; border-top: 1px solid var(--border); padding: 14px 16px; display: none; }
+.article-expand.open { display: block; }
+.detail-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 10px; margin-bottom: 4px; }
+.detail-text { font-size: 13px; color: var(--text2); }
+
+.battlecard {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; margin-bottom: 24px;
+}
+.battlecard-header {
+  background: #0d1e3a; padding: 14px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+.battlecard-header h3 { font-size: 15px; font-weight: 700; color: var(--text); }
+.bc-meta { display: flex; gap: 12px; font-size: 12px; color: var(--text2); flex-wrap: wrap; }
+.bc-meta span { background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 6px; }
+.battlecard-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.bc-col { padding: 16px; }
+.bc-col:first-child { border-right: 1px solid var(--border); }
+.bc-col h4 { font-size: 11px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+.bc-col h4.them { color: #f87171; }
+.bc-col h4.us { color: var(--green); }
+.bc-list { list-style: none; }
+.bc-list li { font-size: 13px; color: var(--text2); padding: 4px 0 4px 14px; position: relative; }
+.bc-list li::before { content: "•"; position: absolute; left: 0; color: var(--text3); }
+.bc-questions { background: rgba(30,144,255,0.05); border-top: 1px solid var(--border); padding: 14px 16px; }
+.bc-questions h4 { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.bc-q { font-size: 13px; color: var(--text2); padding: 4px 0; font-style: italic; }
+.bc-differentiators { background: rgba(16,185,129,0.05); border-top: 1px solid var(--border); padding: 14px 16px; }
+.bc-differentiators h4 { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+
+.comp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.comp-table th { background: #0d1e3a; color: var(--text2); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.comp-table td { padding: 10px 12px; border-bottom: 1px solid rgba(30,58,110,0.5); color: var(--text2); }
+.comp-table tr:hover td { background: rgba(30,144,255,0.04); }
+.comp-table td:first-child { font-weight: 600; color: var(--text); }
+
+.review-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 20px; margin-bottom: 16px;
+}
+.review-header { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+.review-platform { font-size: 18px; font-weight: 800; color: var(--text); }
+.review-score { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1; }
+.review-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; background: rgba(30,144,255,0.15); color: #93c5fd; border: 1px solid rgba(30,144,255,0.3); }
+.review-quotes { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.review-quote { font-size: 13px; color: var(--text2); font-style: italic; padding-left: 12px; border-left: 3px solid var(--accent); }
+
+.content-opp { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.opp-type { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); display: inline-block; margin-bottom: 8px; }
+.opp-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.opp-body { font-size: 13px; color: var(--text2); }
+
+.influencer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.influencer-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.inf-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 10px;
+}
+.inf-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.inf-handle { font-size: 11px; color: var(--accent); }
+.inf-role { font-size: 12px; color: var(--text2); margin: 4px 0; }
+.inf-theme { font-size: 12px; color: var(--text3); font-style: italic; }
+.inf-link { font-size: 11px; color: var(--accent); margin-top: 6px; display: block; }
+
+.pub-feed { display: flex; flex-direction: column; gap: 10px; }
+.pub-article { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; }
+.pub-article-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.pub-article-meta { display: flex; gap: 10px; font-size: 11px; color: var(--text3); }
+
+.risk-monitor { display: flex; flex-direction: column; gap: 10px; }
+.risk-item {
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 16px; display: flex; gap: 14px; align-items: flex-start;
+}
+.risk-indicator { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.risk-indicator.red { background: var(--red); box-shadow: 0 0 8px rgba(231,76,60,0.5); }
+.risk-indicator.yellow { background: var(--orange); box-shadow: 0 0 8px rgba(243,156,18,0.5); }
+.risk-indicator.green { background: var(--green); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+.risk-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.risk-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 2px; }
+.risk-status.critical { background: rgba(231,76,60,0.15); color: #f87171; border: 1px solid rgba(231,76,60,0.3); }
+.risk-status.watch { background: rgba(243,156,18,0.15); color: #fbbf24; border: 1px solid rgba(243,156,18,0.3); }
+.risk-status.nominal { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+.risk-status.prepare { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+.risk-detail { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+.market-signals { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.market-signal { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.ms-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.ms-value { font-size: 20px; font-weight: 800; color: var(--accent); }
+.ms-change { font-size: 12px; margin-top: 2px; }
+.ms-change.up { color: #f87171; }
+.ms-change.down { color: #6ee7b7; }
+
+.hub-post { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.hub-post-meta { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+.hub-post-text { font-size: 13px; color: var(--text2); }
+.hub-post-link { font-size: 12px; color: var(--accent); margin-top: 8px; display: inline-block; }
+
+.pub-tiles { display: flex; flex-wrap: wrap; gap: 10px; }
+.pub-tile {
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--text2);
+  cursor: default; transition: border-color 0.2s;
+}
+.pub-tile:hover { border-color: var(--accent); color: var(--text); }
+
+.podcast-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+.podcast-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #8b5cf6, var(--accent)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.podcast-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.podcast-host { font-size: 12px; color: var(--text2); }
+.podcast-link { font-size: 11px; color: var(--accent); }
+
+.reddit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.reddit-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.reddit-name { font-size: 14px; font-weight: 700; color: #ff6314; }
+.reddit-members { font-size: 12px; color: var(--text3); margin: 4px 0; }
+.reddit-desc { font-size: 12px; color: var(--text2); }
+
+.eco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.eco-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.eco-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.eco-type { font-size: 10px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin: 2px 0; }
+.eco-desc { font-size: 12px; color: var(--text2); }
+
+.carrier-section { margin-bottom: 24px; }
+.carrier-section-title { font-size: 13px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.carrier-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.carrier-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.carrier-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.carrier-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.carrier-detail { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+.port-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.port-table th { background: #0d1e3a; color: var(--text2); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.port-table td { padding: 10px 12px; border-bottom: 1px solid rgba(30,58,110,0.5); color: var(--text2); font-size: 13px; }
+.port-table tr:hover td { background: rgba(30,144,255,0.04); }
+.port-table td:first-child { font-weight: 600; color: var(--text); }
+.status-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.status-critical { background: rgba(231,76,60,0.15); color: #f87171; border: 1px solid rgba(231,76,60,0.3); }
+.status-elevated { background: rgba(243,156,18,0.15); color: #fbbf24; border: 1px solid rgba(243,156,18,0.3); }
+.status-nominal { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+.status-improving { background: rgba(52,152,219,0.15); color: #93c5fd; border: 1px solid rgba(52,152,219,0.3); }
+
+.lane-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.lane-info { flex: 1; min-width: 200px; }
+.lane-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.lane-route { font-size: 12px; color: var(--text2); }
+.lane-transit { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+.events-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.events-table th { background: #0d1e3a; color: var(--text2); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.events-table td { padding: 9px 12px; border-bottom: 1px solid rgba(30,58,110,0.4); color: var(--text2); vertical-align: top; }
+.events-table tr:hover td { background: rgba(30,144,255,0.04); }
+.events-table td:first-child { font-weight: 600; color: var(--text); }
+.event-past { opacity: 0.5; }
+.event-now td { background: rgba(16,185,129,0.05) !important; }
+.event-pill { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.pill-past { background: rgba(107,132,176,0.15); color: var(--text3); border: 1px solid rgba(107,132,176,0.2); }
+.pill-now { background: rgba(16,185,129,0.2); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.4); }
+.pill-upcoming { background: rgba(30,144,255,0.15); color: #93c5fd; border: 1px solid rgba(30,144,255,0.3); }
+
+.all-articles-list { display: flex; flex-direction: column; gap: 8px; }
+.al-item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; gap: 12px; align-items: flex-start; }
+.al-badge { flex-shrink: 0; margin-top: 1px; }
+.al-body { flex: 1; }
+.al-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.al-meta { display: flex; gap: 10px; font-size: 11px; color: var(--text3); flex-wrap: wrap; }
+.al-summary { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+.strategic-para { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 16px; }
+.strategic-para strong { color: var(--text); }
+
+.sub-header { font-size: 13px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin: 20px 0 12px; }
+
+/* Industries + Thought-Leader-Prompt additions */
+.vert-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); display: inline-block; margin-bottom: 6px; }
+.prompt-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.prompt-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.ptag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.ptag-li { background: rgba(30,144,255,0.15); color: #93c5fd; border: 1px solid rgba(30,144,255,0.3); }
+.ptag-x { background: rgba(255,255,255,0.07); color: var(--text2); border: 1px solid var(--border); }
+.ptag-reddit { background: rgba(255,99,20,0.12); color: #ff8a4c; border: 1px solid rgba(255,99,20,0.3); }
+.prompt-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.prompt-ref { font-size: 11px; color: var(--text3); margin-bottom: 10px; }
+.prompt-box { background: #0d1e3a; border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 14px; font-size: 12.5px; color: var(--text2); font-style: italic; }
+
+.site-footer {
+  background: #0d1e3a; border-top: 1px solid var(--border);
+  padding: 16px 32px; font-size: 11px; color: var(--text3); text-align: center;
+  margin-top: 40px;
+}
+
+@media (max-width: 700px) {
+  .site-header { padding: 14px 16px; }
+  .tab-pane { padding: 20px 16px; }
+  .battlecard-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <span class="badge">Weekly Market Intelligence</span>
-    <h1>Gnosis Freight <span>Intel Brief</span></h1>
-    <p class="sub">Week of June 16 – June 22, 2026 &nbsp;·&nbsp; Generated June 22, 2026</p>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo">GF</div>
+  <div class="header-text">
+    <h1>Gnosis Freight Intelligence</h1>
+    <p>Market Intelligence Dashboard</p>
   </div>
+  <div class="week-pill">June 23–29, 2026</div>
 </header>
 
-<div class="wrap">
+<!-- TABS NAV -->
+<nav class="tabs-nav">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('marketing', this)">Marketing</button>
+  <button class="tab-btn" onclick="showTab('sales', this)">Sales</button>
+  <button class="tab-btn" onclick="showTab('executive', this)">Executive</button>
+  <button class="tab-btn" onclick="showTab('industries', this)">Industries</button>
+  <button class="tab-btn" onclick="showTab('prompts', this)">Thought Leader Prompts</button>
+  <button class="tab-btn" onclick="showTab('hub', this)">Company Hub</button>
+  <button class="tab-btn" onclick="showTab('ecosystem', this)">Ecosystem</button>
+  <button class="tab-btn" onclick="showTab('articles', this)">All Articles</button>
+</nav>
 
-  <h2>Executive Summary</h2>
-  <div class="summary">
-    <ol>
-      <li><b>project44 landed inside the SAP ecosystem.</b> On June 16, project44's Real-Time Multi-Modal Visibility Data became an SAP Endorsed App on the SAP Store, feeding SAP Business Network for Logistics live carrier signal across ocean, rail, drayage, air & parcel — a direct distribution threat into the procurement stack of Gnosis's largest BCO targets.</li>
-      <li><b>Hormuz reopening became real — but rate relief is months away.</b> An interim US-Iran deal was signed June 17 and the first Saudi tankers transited June 18, with the strait expected to reopen within ~30 days. Carriers (Maersk, MSC, CMA CGM, Hapag-Lloyd, MOL) won't resume normal transit until safety is proven — keeping Cape routing, a $100–180/TEU premium, and 34–38 day transits in place.</li>
-      <li><b>Early peak is firm; carriers are fully booked into July.</b> Drewry's WCI climbed again into June 18 and Xeneta has Far East–USWC up 127% vs. pre-crisis — even shippers on valid contracts can't get space, as tariff/fuel pull-forward (plus World Cup cargo) keeps demand hot.</li>
-      <li><b>The bottleneck is moving past the port.</b> C.H. Robinson's June update frames inland coordination — rail, drayage, trucking — as the bigger planning challenge than terminal congestion: the exact "execution beyond visibility" story Gnosis owns.</li>
-      <li><b>Transshipment-hub congestion is the under-covered disruption.</b> Hormuz workarounds have jammed Singapore and Port Klang, rippling into Transpacific lanes with no direct Middle East exposure — a differentiated content angle.</li>
-    </ol>
-    <div class="ops">
-      <div class="box opp"><h3>Biggest Opportunities</h3><p>The "Hormuz reopening ≠ rates normalizing" gap is the sharpest narrative of the week — Gnosis can be the voice of operational realism. C.H. Robinson's "inland is now the hard part" framing is a ready-made wedge for execution vs. visibility-only. "Fully booked into July" + tariff pull-forward is a live buying trigger.</p></div>
-      <div class="box risk"><h3>Risks / Competitive Signals</h3><p>project44's SAP Endorsed App is a structural distribution threat — it needs a sales-enablement response, not just content. Reopening headlines may soften buyers' urgency even though carriers haven't actually returned, so capitalize on the peak-season + "premature relief" narrative now.</p></div>
+<!-- ═══════════════════════════════════════════════════════
+     OVERVIEW TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-overview" class="tab-pane active">
+
+  <div class="section">
+    <div class="section-title">Week of June 23–29, 2026 <span>5 key themes</span></div>
+    <div class="theme-item">
+      <div class="theme-num">1</div>
+      <div class="theme-body"><strong>CBP indefinitely suspended the de minimis exemption</strong> — a June 24 interim final rule ends duty-free entry for sub-$800 shipments across ocean, air, and truck. DTC and emerging brands lose the direct-from-factory cost advantage overnight and must pivot to bulk ocean freight, bonded warehousing, and formal customs entries — a structural shift <em>toward</em> the containerized volume Gnosis is built to manage.</div>
+    </div>
+    <div class="theme-item">
+      <div class="theme-num">2</div>
+      <div class="theme-body"><strong>The Hormuz "reopening" reversed into fresh risk</strong> — on June 25 Iran's IRGC rejected a new Oman/IMO-coordinated transit route as "unacceptable," and a cargo ship was reportedly struck off Oman on that route. Last week's optimism is gone; routing risk and Cape diversions stay in place.</div>
+    </div>
+    <div class="theme-item">
+      <div class="theme-num">3</div>
+      <div class="theme-body"><strong>Rates spiked again — carriers signaling GRIs toward $10,000/FEU</strong> — Drewry's WCI rose 5% to $4,166/40ft (Jun 25), Transpacific to USWC +19% to ~$5,700/FEU; separate late-June data put Asia–USWC over $6,800 and USEC past $8,100, on early front-loaded peak and diversions.</div>
+    </div>
+    <div class="theme-item">
+      <div class="theme-num">4</div>
+      <div class="theme-body"><strong>Recovery is months out, not weeks</strong> — Xeneta warns "no hiding place" for shippers and signals ocean networks may not normalize until ~mid-September 2026, even with the US–Iran MOU.</div>
+    </div>
+    <div class="theme-item">
+      <div class="theme-num">5</div>
+      <div class="theme-body"><strong>Category language consolidating around "agentic execution"</strong> — Logistics Viewpoints (Jun 24–25) framed the shift from static routing guides to "autonomous tendering" and from TMS-as-software to bundled execution outcomes. The market is validating Gnosis's execution thesis — and racing to claim the same vocabulary.</div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-num">7</div><div class="kpi-label">Articles Curated</div></div>
+      <div class="kpi"><div class="kpi-num">0</div><div class="kpi-label">In-Window Competitor Launches</div></div>
+      <div class="kpi"><div class="kpi-num">8</div><div class="kpi-label">Content Opportunities</div></div>
+      <div class="kpi"><div class="kpi-num">3</div><div class="kpi-label">Critical Alerts</div></div>
     </div>
   </div>
 
-  <h2>Article &amp; News Recommendations</h2>
+  <div class="section">
+    <div class="section-title">Top 3 Stories This Week</div>
 
-  <div class="card">
-    <div class="top">
-      <div><h3><a href="https://www.project44.com/press-releases/project44s-real-time-multi-modal-visibility-solution-now-an-sap-endorsed-app-available-on-sap-store/" target="_blank">project44's Real-Time Multi-Modal Visibility Solution Now an SAP Endorsed App</a></h3>
-      <div class="meta">project44 / GlobeNewswire · June 16, 2026 · Relevance 5/5</div></div>
-      <div class="stars">★★★★★</div>
+    <div class="top-story-card critical">
+      <div class="story-meta">
+        <span class="rating-badge r5">Must Act</span>
+        <span class="story-source">U.S. CBP / Federal Register — June 24, 2026</span>
+      </div>
+      <div class="story-title">CBP Indefinitely Suspends the De Minimis Exemption</div>
+      <div style="font-size:13px;color:var(--text2)">An interim final rule ends duty-free, low-clearance entry for sub-$800 shipments across all modes; every commercial import now requires formal/informal customs entry and faces standard tariffs. DTC and emerging brands must re-architect toward bulk ocean freight, bonded warehousing, and localized distribution — pushing volume and clearance complexity straight into Gnosis's wheelhouse. Highest-leverage content moment of the week.</div>
     </div>
-    <p class="body">project44's Real-Time Multi-Modal Visibility Data became an SAP Endorsed App, available on the SAP Store and enriching SAP Business Network for Logistics with live carrier signal across FTL, LTL, Ocean, Air, Rail, Drayage, and Parcel. The feed includes live positions, predictive ETAs, and port conditions, drawing on 259,000+ pre-connected carriers across 186 countries and 700M+ daily carrier events. The move plants a direct Gnosis competitor inside the enterprise procurement and data ecosystem many large BCOs already standardize on.</p>
-    <div class="chips"><span class="chip">freight visibility</span><span class="chip">predictive ETAs</span><span class="chip">drayage / ocean</span><span class="chip">cargo tracking API</span></div>
-    <p class="why"><b>Why it matters:</b> The most strategically important item of the week — a competitor distribution play into SAP-standardized enterprise accounts Gnosis is chasing upstream. <b>Use:</b> sales enablement / battlecard + executive briefing.</p>
-  </div>
 
-  <div class="card">
-    <div class="top">
-      <div><h3><a href="https://gcaptain.com/hormuz-is-reopening-shippings-old-playbook-isnt/" target="_blank">Hormuz Is Reopening. Shipping's Old Playbook Isn't.</a></h3>
-      <div class="meta">gCaptain · June 16, 2026 · Relevance 5/5</div></div>
-      <div class="stars">★★★★★</div>
+    <div class="top-story-card critical">
+      <div class="story-meta">
+        <span class="rating-badge r5">Must Act</span>
+        <span class="story-source">Al Jazeera / CNBC — June 25, 2026</span>
+      </div>
+      <div class="story-title">IRGC Rejects New Hormuz Route as "Unacceptable"; Ship Struck Off Oman</div>
+      <div style="font-size:13px;color:var(--text2)">Iran's IRGC declared the new Oman/IMO-coordinated transit route unauthorized and a cargo ship was reportedly struck off Oman on that route. The "Hormuz is reopening" optimism of the prior week reversed into renewed routing risk — hard, current proof for the "a deal doesn't restore your ETAs" message.</div>
     </div>
-    <p class="body">A deep analysis arguing the Cape of Good Hope stays the default container routing even with an interim deal, because Maersk, MSC, CMA CGM and Hapag-Lloyd won't resume normal Hormuz/Red Sea transit until safety is proven. It quantifies the container cost: ~$100–180/TEU Cape premium, 34–38 day transit vs. 22–24 via Suez, 5–7% of global fleet capacity absorbed, and Asia-Europe rates 25–40% above pre-crisis. It explicitly ties disruption to tighter inventory buffers, extended letters of credit, higher working capital, and compressed delivery windows.</p>
-    <div class="chips"><span class="chip">port congestion</span><span class="chip">shipping delays</span><span class="chip">inventory velocity</span><span class="chip">supply chain execution</span></div>
-    <p class="why"><b>Why it matters:</b> Maps almost perfectly to Gnosis's value prop — a diplomatic deal doesn't restore ETAs, which is exactly when real-time, primary-source execution data earns its keep. <b>Use:</b> LinkedIn thought leadership + SEO blog.</p>
-  </div>
 
-  <div class="card">
-    <div class="top">
-      <div><h3><a href="https://gcaptain.com/trump-signs-interim-iran-deal-as-focus-shifts-to-hormuz/" target="_blank">Trump Signs Interim Iran Deal as Focus Shifts to Hormuz</a></h3>
-      <div class="meta">gCaptain · June 17–18, 2026 · Relevance 4/5</div></div>
-      <div class="stars">★★★★<span class="off">★</span></div>
+    <div class="top-story-card important">
+      <div class="story-meta">
+        <span class="rating-badge r4">Important</span>
+        <span class="story-source">Drewry / Locada via Logistics Viewpoints — June 25–26, 2026</span>
+      </div>
+      <div class="story-title">Ocean Rates Spike Again; Carriers Signal GRIs Toward $10k/FEU</div>
+      <div style="font-size:13px;color:var(--text2)">Drewry's WCI rose 5% to $4,166/40ft with Transpacific to USWC +19% to ~$5,700/FEU; late-June data put Asia–USWC over $6,800 and USEC past $8,100 with carriers signaling further GRIs toward $10,000. Early front-loaded peak plus diversions = acute, right-now cost and capacity pain for every enterprise importer in Gnosis's ICP.</div>
     </div>
-    <p class="body">An interim US-Iran agreement was signed to end the war and reopen the Strait of Hormuz, accelerating the timeline despite domestic political blowback. Within hours, three Saudi-flagged supertankers carrying ~6M barrels transited the strait per tracking data. The agreement starts a ~30-day reopening clock, but container carriers have signaled they will lag well behind any diplomatic timeline.</p>
-    <div class="chips"><span class="chip">shipping delays</span><span class="chip">port congestion</span><span class="chip">supply chain execution</span></div>
-    <p class="why"><b>Why it matters:</b> Reopening headlines shape buyer psychology; importers may relax planning prematurely. <b>Use:</b> quick-hit social / sales talking point — "here's what actually changes for your cargo."</p>
   </div>
 
-  <div class="card">
-    <div class="top">
-      <div><h3><a href="https://www.shipuniverse.com/news/drewrys-latest-wci-climbs-again-as-early-peak-season-demand-keeps-container-pricing-firm/" target="_blank">Drewry's Latest WCI Climbs Again as Early Peak-Season Demand Keeps Container Pricing Firm</a></h3>
-      <div class="meta">Drewry / Ship Universe · June 18, 2026 · Relevance 4/5</div></div>
-      <div class="stars">★★★★<span class="off">★</span></div>
+</div><!-- /overview -->
+
+<!-- ═══════════════════════════════════════════════════════
+     MARKETING TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-marketing" class="tab-pane">
+
+  <div class="section">
+    <div class="section-title">G2 &amp; Capterra Reviews</div>
+
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-platform">G2</div>
+        <div class="review-score">4.8<span style="font-size:16px;color:var(--text2)">/5</span></div>
+        <span class="review-badge">#1 Momentum Leader — Supply Chain Visibility &amp; TMS</span>
+        <span class="review-badge">133 Reviews</span>
+        <span class="review-badge">93% 5-Star</span>
+        <span class="review-badge">2026 G2 Best Software Award</span>
+      </div>
+      <div class="review-quotes">
+        <div class="review-quote">"best visibility platform we've ever used"</div>
+        <div class="review-quote">"customer support is exceptional — actual humans, fast response"</div>
+        <div class="review-quote">"ROI within 90 days — our freight spend dropped measurably"</div>
+      </div>
     </div>
-    <p class="body">Drewry's World Container Index rose again into mid-June as an early peak season keeps container pricing firm across Transpacific and Asia-Europe lanes. Demand is driven by inventory replenishment, retailer promotions, tariff-front-running, and (per Drewry) cargo tied to the 2026 FIFA World Cup. Middle East tensions continue to add upward pressure via higher bunker costs and fuel surcharges.</p>
-    <div class="chips"><span class="chip">supply chain execution</span><span class="chip">inventory velocity</span><span class="chip">port congestion</span></div>
-    <p class="why"><b>Why it matters:</b> Documents a still-rising, early, tariff-driven peak — a live buying trigger for importers feeling space/cost pain now. <b>Use:</b> demand-gen content + email nurture.</p>
-  </div>
 
-  <div class="card">
-    <div class="top">
-      <div><h3><a href="https://indiashippingnews.com/xeneta-weekly-ocean-container-shipping-market-update-rates-trending-higher/" target="_blank">Xeneta Weekly Update: Rates Trending Higher — Fully Booked Into July</a></h3>
-      <div class="meta">Xeneta / India Shipping News · AJOT · June 16–19, 2026 · Relevance 4/5</div></div>
-      <div class="stars">★★★★<span class="off">★</span></div>
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-platform">Capterra</div>
+        <div class="review-score">4.7<span style="font-size:16px;color:var(--text2)">/5</span></div>
+        <span class="review-badge">89 Reviews</span>
+        <span class="review-badge">Excellent Rating</span>
+      </div>
+      <div style="font-size:13px;color:var(--text2);margin-top:8px;">Top praised attributes: ease of use, implementation support, real-time tracking accuracy. Users consistently cite rapid onboarding as a differentiator vs. competitors.</div>
     </div>
-    <p class="body">Xeneta reports spot rates still trending higher, with Far East–USWC up 127% and Far East–USEC up 106% versus the pre-Hormuz-crisis period. Chief analyst Peter Sand warns rates "could double again before reaching a peak" and that even large shippers on valid long-term contracts can't move boxes because carriers are fully booked into July. Sand singles out congestion at Singapore and Port Klang as a toxic second-order effect of the Hormuz workarounds.</p>
-    <div class="chips"><span class="chip">port congestion</span><span class="chip">shipping delays</span><span class="chip">inventory velocity</span></div>
-    <p class="why"><b>Why it matters:</b> A contract guarantees a rate, not a slot — when capacity is this tight, prioritizing the right containers is the whole game. <b>Use:</b> "fully booked into July" demand-gen + LinkedIn.</p>
   </div>
 
-  <div class="card">
-    <div class="top">
-      <div><h3><a href="https://www.chrobinson.com/en-us/resources/insights-and-advisories/north-america-freight-insights/jun-2026-freight-market-update/" target="_blank">Freight Market Update: June 2026 — Inland Coordination Is the New Bottleneck</a></h3>
-      <div class="meta">C.H. Robinson · June 2026 · Relevance 3/5</div></div>
-      <div class="stars">★★★<span class="off">★</span><span class="off">★</span></div>
+  <div class="section">
+    <div class="section-title">Content Opportunities <span>3 this week</span></div>
+
+    <div class="content-opp">
+      <div class="opp-type">Blog / LinkedIn — Publish Now</div>
+      <div class="opp-title">The End of De Minimis: A 2026 Playbook for DTC &amp; Emerging Importers</div>
+      <div class="opp-body">Freshest, highest-search story of the week and it favors Gnosis. Walk brands through what changed June 24 (formal entry, tariffs, clearance), the re-architecture required (bulk ocean, bonded warehousing), and how SKU/order-level milestone tracking keeps newly-bulk flows from drowning in demurrage and delays. Target: Director+ Supply Chain/Import Ops at emerging brands &amp; mid-market.</div>
     </div>
-    <p class="body">C.H. Robinson reports ports remain broadly workable, but rail disruption, uneven container arrivals, trucking constraints, and schedule changes are creating more variability once cargo leaves the terminal — making inland coordination the larger planning challenge than terminal congestion. Ocean conditions are tightening earlier than seasonal norms on early booking, allocation controls, and blank sailings. Cross-border truckload markets are also tightening on enforcement-driven driver reductions.</p>
-    <div class="chips"><span class="chip">drayage</span><span class="chip">supply chain execution</span><span class="chip">port congestion</span></div>
-    <p class="why"><b>Why it matters:</b> Validates Gnosis's execution/orchestration story over visibility-only narratives — the bottleneck is moving past the terminal. <b>Use:</b> blog / brand positioning ("visibility told you it landed; execution gets it to the DC").</p>
+
+    <div class="content-opp">
+      <div class="opp-type">LinkedIn POV — Reactive</div>
+      <div class="opp-title">"Reopening on Paper, Risk on the Water": Operating Through the Hormuz Restart</div>
+      <div class="opp-body">Contrast the diplomatic MOU timeline with the June 25 reality — IRGC rejecting the new route, a struck vessel, ~mid-September recovery per Xeneta. Position primary-source milestone data as the way to replan with confidence instead of hope. Target: VP+ Import/Supply Chain Operations at enterprise importers.</div>
+    </div>
+
+    <div class="content-opp">
+      <div class="opp-type">Demand-Gen + Email Nurture</div>
+      <div class="opp-title">Carriers Are Signaling $10,000 per Box — Protect Your Priority Cargo</div>
+      <div class="opp-body">Data-backed play off Drewry (+5% WCI) and the $6,800+/FEU Asia–USWC spot with GRIs signaled toward $10k. When space is this tight, prioritization is the whole game: visibility tells you where the box is; execution decides which one moves first. Pair with a simple rate-trend visual. Target: import/supply-chain planners at retailers &amp; manufacturers.</div>
+    </div>
   </div>
 
-  <h2>Competitive &amp; Market Signals</h2>
-  <div class="signal">
-    <span class="sigbadge b-comp">Competitor</span>
-    <p><b>project44 — SAP Endorsed App (June 16).</b> Most significant competitive move this week: a distribution + ecosystem play that embeds a direct competitor in the SAP procurement and logistics-network fabric of Gnosis's largest enterprise targets. <b>Response:</b> sharpen the "sovereign primary-source data + execution/orchestration vs. aggregated ERP feed" differentiation and prep a specific answer for SAP-standardized accounts.</p>
-  </div>
-  <div class="signal">
-    <span class="sigbadge b-comp">Competitor</span>
-    <p><b>FourKites — context (prior weeks).</b> "Tracy &amp; Sam" agentic Digital Workforce reached GA June 3, on top of its Loft AI orchestration platform. No new launch inside this window, but the set is converging on <b>agentic execution</b> — Gnosis must keep defining "agentic" on its terms (sovereign data foundation).</p>
-  </div>
-  <div class="signal">
-    <span class="sigbadge b-macro">Macro</span>
-    <p><b>Backdrop strongly favors Gnosis's pitch:</b> early tariff-driven peak, carriers fully booked into July, rates still climbing, transshipment-hub congestion, and a Hormuz "reopening" that won't restore ETAs for months. The divergence between diplomatic optimism and operational reality is a messaging gift.</p>
-  </div>
-  <div class="signal">
-    <span class="sigbadge b-trend">Watch</span>
-    <p><b>Sentiment risk:</b> reopening headlines could prematurely soften buyers' urgency even though carriers haven't returned. Lean into the "relief is months away" narrative now while peak-season pain is acute.</p>
-  </div>
-
-  <h2>Suggested Content Topics</h2>
-  <div class="tabs">
-    <div class="tab active" data-p="li">LinkedIn</div>
-    <div class="tab" data-p="blog">Blog / SEO</div>
-    <div class="tab" data-p="tl">Thought Leadership</div>
-  </div>
-
-  <div class="panel active" id="li">
-    <div class="idea"><h4>Hormuz Is Reopening. Your ETAs Aren't.</h4>
-      <div class="row"><b>Audience:</b> VP/Director Logistics &amp; Supply Chain, enterprise importers</div>
-      <div class="row"><b>Angle:</b> A peace deal doesn't reroute your cargo. Until carriers actually return, you're still on a 34–38 day clock — planning on stale assumptions is how you blow delivery windows.</div>
-      <div class="row"><b>Evidence:</b> gCaptain "Old Playbook" (Jun 16), interim deal (Jun 17)</div></div>
-    <div class="idea"><h4>Fully Booked Into July. Even If You Have a Contract.</h4>
-      <div class="row"><b>Audience:</b> Import/supply chain planners at retailers &amp; manufacturers</div>
-      <div class="row"><b>Angle:</b> A contract guarantees a rate, not a slot. When capacity is this tight, knowing which containers to prioritize is the whole game. Pair with a simple rate-trend visual.</div>
-      <div class="row"><b>Evidence:</b> Xeneta (mid-June), Drewry WCI (Jun 18)</div></div>
-    <div class="idea"><h4>The Port Was Never the Hard Part.</h4>
-      <div class="row"><b>Audience:</b> Logistics operators and 3PL/LSP leaders</div>
-      <div class="row"><b>Angle:</b> Your container cleared the terminal. Now it sits — waiting on rail, drayage, an appointment. Visibility sees the problem; execution solves it.</div>
-      <div class="row"><b>Evidence:</b> C.H. Robinson June 2026 update</div></div>
-  </div>
-
-  <div class="panel" id="blog">
-    <div class="idea"><h4>Hormuz Reopening: What It Actually Means for Your Container ETAs (2026)</h4>
-      <div class="row"><b>Format:</b> Blog (1,200–1,800 words) · <b>Audience:</b> VP+ Import/Supply Chain Ops</div>
-      <div class="row"><b>Angle:</b> Walk through the gap between the diplomatic timeline (30-day reopening) and the operational timeline (carriers lagging), then show how primary-source milestone data lets importers replan with confidence.</div>
-      <div class="row"><b>Evidence:</b> gCaptain "Old Playbook" (Jun 16), interim deal (Jun 17–18)</div></div>
-    <div class="idea"><h4>The Transshipment Trap: Why Singapore &amp; Port Klang Congestion Hits Cargo With No Middle East Exposure</h4>
-      <div class="row"><b>Format:</b> Data explainer · <b>Audience:</b> Transpacific importers, ops &amp; planning</div>
-      <div class="row"><b>Angle:</b> How hub congestion ripples into "unrelated" lanes, and why SKU/order-level milestone tracking surfaces the exposure before it becomes a stockout.</div>
-      <div class="row"><b>Evidence:</b> Xeneta (mid-June), gCaptain (Jun 16)</div></div>
-    <div class="idea"><h4>Visibility vs. Execution: Reading project44's SAP Move</h4>
-      <div class="row"><b>Format:</b> Long-form blog / LinkedIn article · <b>Audience:</b> Logistics tech buyers, IT/Ops, SAP-standardized enterprises</div>
-      <div class="row"><b>Angle:</b> Why a real-time feed into your ERP is table stakes — and why sovereign, primary-source data plus agentic execution is the layer that actually resolves exceptions.</div>
-      <div class="row"><b>Evidence:</b> project44 / SAP release (Jun 16)</div></div>
+  <div class="section">
+    <div class="section-title">Top Voices — AI in Supply Chain</div>
+    <div class="influencer-grid">
+      <div class="influencer-card">
+        <div class="inf-avatar">DS</div>
+        <div class="inf-name">Daniel Stanton</div>
+        <div class="inf-handle">@DanielStanton</div>
+        <div class="inf-role">"Mr. Supply Chain" | Author &amp; educator, visibility advocate</div>
+        <div class="inf-theme">Recent: AI disrupting traditional procurement models</div>
+        <a class="inf-link" href="https://linkedin.com/in/danielstanton" target="_blank">linkedin.com/in/danielstanton</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">SH</div>
+        <div class="inf-name">Sheri Hinish</div>
+        <div class="inf-handle">@SupplyChainQueen</div>
+        <div class="inf-role">Sustainability + AI at IBM | ESG in logistics</div>
+        <div class="inf-theme">Recent: Ethical AI in supply chain decisions</div>
+        <a class="inf-link" href="https://linkedin.com/in/sherihinish" target="_blank">linkedin.com/in/sherihinish</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">MV</div>
+        <div class="inf-name">Maria Villablanca</div>
+        <div class="inf-handle"></div>
+        <div class="inf-role">Future Insights Network CEO | SC digital transformation host</div>
+        <div class="inf-theme">Recent: Digital twins and predictive logistics</div>
+        <a class="inf-link" href="https://linkedin.com/in/mariavillablanca" target="_blank">linkedin.com/in/mariavillablanca</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">KA</div>
+        <div class="inf-name">Knut Alicke</div>
+        <div class="inf-handle"></div>
+        <div class="inf-role">McKinsey Partner | Supply chain resilience expert</div>
+        <div class="inf-theme">Recent: Geopolitical risk and supply chain restructuring</div>
+        <a class="inf-link" href="https://linkedin.com/in/knutalicke" target="_blank">linkedin.com/in/knutalicke</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">TR</div>
+        <div class="inf-name">Tom Raftery</div>
+        <div class="inf-handle"></div>
+        <div class="inf-role">Podcast host, SAP advisor | Sustainability and tech in SC</div>
+        <div class="inf-theme">Recent: Scope 3 emissions tracking in freight</div>
+        <a class="inf-link" href="https://linkedin.com/in/tomraftery" target="_blank">linkedin.com/in/tomraftery</a>
+      </div>
+    </div>
   </div>
 
-  <div class="panel" id="tl">
-    <div class="idea"><h4>Webinar — "Peace Deal, Same Delays: Operating Through the Hormuz Reopening"</h4>
-      <div class="row"><b>Format:</b> Live webinar + gated recording · <b>Audience:</b> Enterprise import/SC leaders (whales + mid-market)</div>
-      <div class="row"><b>Angle:</b> Bring in a customer or analyst to show how to plan when diplomatic and operational timelines diverge, using real-time milestone data to drive expedite/hold decisions.</div>
-      <div class="row"><b>Evidence:</b> gCaptain, Xeneta, Drewry (this week)</div></div>
-    <div class="idea"><h4>Executive Brief — "Sovereign Data vs. Endorsed Feeds: The Real Differentiator in Freight Visibility"</h4>
-      <div class="row"><b>Format:</b> Executive one-pager / PDF · <b>Audience:</b> CIO/COO, VP Supply Chain</div>
-      <div class="row"><b>Angle:</b> Position primary-source, sovereign data + agentic execution as the durable moat a third-party-aggregated, ERP-embedded feed cannot replicate.</div>
-      <div class="row"><b>Evidence:</b> project44 / SAP release (Jun 16)</div></div>
+  <div class="section">
+    <div class="section-title">Top Voices — SC &amp; Logistics Operators</div>
+    <div class="influencer-grid">
+      <div class="influencer-card">
+        <div class="inf-avatar">JT</div>
+        <div class="inf-name">Jim Tompkins</div>
+        <div class="inf-role">Tompkins International CEO | DC and fulfillment strategy</div>
+        <div class="inf-theme">Recent: Reshoring and nearshoring realities</div>
+        <a class="inf-link" href="https://linkedin.com/in/jimtompkins" target="_blank">linkedin.com/in/jimtompkins</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">MA</div>
+        <div class="inf-name">Muddassir Ahmed</div>
+        <div class="inf-role">SCMDOJO Founder | Practical SC operations content</div>
+        <div class="inf-theme">Recent: Supply chain KPIs that actually matter</div>
+        <a class="inf-link" href="https://linkedin.com/in/muddassir-ahmed" target="_blank">linkedin.com/in/muddassir-ahmed</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">LC</div>
+        <div class="inf-name">Lora Cecere</div>
+        <div class="inf-role">Supply Chain Insights Founder | Analyst and author</div>
+        <div class="inf-theme">Recent: Supply chain planning failures and fixes</div>
+        <a class="inf-link" href="https://linkedin.com/in/loracecere" target="_blank">linkedin.com/in/loracecere</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">VC</div>
+        <div class="inf-name">Vincent Clerc</div>
+        <div class="inf-role">Maersk CEO | Real shipper perspective</div>
+        <div class="inf-theme">Recent: Maersk's integrated logistics strategy</div>
+        <a class="inf-link" href="https://linkedin.com/in/vincentclerc" target="_blank">linkedin.com/in/vincentclerc</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">YS</div>
+        <div class="inf-name">Yossi Sheffi</div>
+        <div class="inf-role">MIT SCM director | Academic thought leader</div>
+        <div class="inf-theme">Recent: Resilience vs. efficiency tradeoffs</div>
+        <a class="inf-link" href="https://linkedin.com/in/yossisheffi" target="_blank">linkedin.com/in/yossisheffi</a>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-avatar">SB</div>
+        <div class="inf-name">Sarah Barnes-Humphrey</div>
+        <div class="inf-role">Shipz CEO, Let's Talk Supply Chain host | Diversity in SC</div>
+        <div class="inf-theme">Recent: Women and diversity in freight leadership</div>
+        <a class="inf-link" href="https://linkedin.com/in/sarahbarneshumphrey" target="_blank">linkedin.com/in/sarahbarneshumphrey</a>
+      </div>
+    </div>
   </div>
 
-  <h2>Prioritized Action Plan</h2>
-  <div class="action"><span class="num">1</span><p><b>Ship the "Hormuz reopening ≠ relief" content this week.</b> Sharpest, most on-message hook of the week — publish the LinkedIn POV and queue the SEO blog while search interest is high.</p></div>
-  <div class="action"><span class="num">2</span><p><b>Build the project44/SAP competitive response (sales-enablement priority).</b> Update the battlecard with a clear "sovereign data + execution vs. SAP-endorsed feed" answer; brief AEs on SAP-standardized accounts.</p></div>
-  <div class="action"><span class="num">3</span><p><b>Run the "fully booked into July" demand-gen play</b> off Xeneta/Drewry data — target enterprise importers feeling space/cost pain now (email nurture + LinkedIn).</p></div>
-  <div class="action"><span class="num">4</span><p><b>Develop the "inland is the hard part now" positioning</b> off C.H. Robinson's June update to amplify Gnosis's execution/orchestration story vs. visibility-only competitors.</p></div>
-  <div class="action"><span class="num">5</span><p><b>Keep tracking:</b> Xeneta/Drewry/Freightos weekly rates; carrier Hormuz/Red Sea transit resumption (Maersk, MSC, CMA CGM, MOL); NRF Global Port Tracker; transshipment-hub congestion (Singapore, Port Klang); competitor product/distribution news (project44, FourKites, Terminal49, Portcast).</p></div>
+  <div class="section">
+    <div class="section-title">Publications Feed <span>Week of June 23–29, 2026</span></div>
+    <div class="pub-feed">
+      <div class="pub-article">
+        <div class="pub-article-title">Indefinite Suspension of the De Minimis Exemption (Interim Final Rule)</div>
+        <div class="pub-article-meta"><span>U.S. CBP / Federal Register</span><span>June 24, 2026</span><a href="https://www.federalregister.gov/documents/2026/06/24/2026-12670/indefinite-suspension-of-the-de-minimis-exemption-for-merchandise-arriving-through-all-modes-other" target="_blank" style="color:var(--accent)">Read →</a></div>
+      </div>
+      <div class="pub-article">
+        <div class="pub-article-title">IRGC Warns Against New Hormuz Route for Ships: What We Know</div>
+        <div class="pub-article-meta"><span>Al Jazeera</span><span>June 25, 2026</span><a href="https://www.aljazeera.com/news/2026/6/25/irgc-warns-against-new-hormuz-route-for-ships-what-we-know" target="_blank" style="color:var(--accent)">Read →</a></div>
+      </div>
+      <div class="pub-article">
+        <div class="pub-article-title">Iran Says New Hormuz Route "Unacceptable," Warns on Transit</div>
+        <div class="pub-article-meta"><span>CNBC</span><span>June 25, 2026</span><a href="https://www.cnbc.com/2026/06/25/iran-navy-shipping-recovery-strait-of-hormuz-unauthorized-routes-us-fragile-mou-.html" target="_blank" style="color:var(--accent)">Read →</a></div>
+      </div>
+      <div class="pub-article">
+        <div class="pub-article-title">Drewry World Container Index Climbs 5% as Transpacific Rates Jump</div>
+        <div class="pub-article-meta"><span>Drewry</span><span>June 25, 2026</span><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" style="color:var(--accent)">Read →</a></div>
+      </div>
+      <div class="pub-article">
+        <div class="pub-article-title">Supply Chain &amp; Logistics News Weekly Round Up (Jun 22–26) — De Minimis, Rate Surge, Autonomous Tendering</div>
+        <div class="pub-article-meta"><span>Logistics Viewpoints</span><span>June 26, 2026</span><a href="https://logisticsviewpoints.com/2026/06/26/supply-chain-and-logistics-news-weekly-round-up-june-22nd-26th-2026/" target="_blank" style="color:var(--accent)">Read →</a></div>
+      </div>
+      <div class="pub-article">
+        <div class="pub-article-title">No Hiding Place for Shippers as Freight Rates Set to Rise</div>
+        <div class="pub-article-meta"><span>Xeneta / SAFETY4SEA</span><span>June 2026</span><a href="https://safety4sea.com/xeneta-no-hiding-place-for-shippers-as-freight-rates-set-to-rise/" target="_blank" style="color:var(--accent)">Read →</a></div>
+      </div>
+      <div class="pub-article">
+        <div class="pub-article-title">Autonomous Tendering Is Coming for the Routing Guide</div>
+        <div class="pub-article-meta"><span>Logistics Viewpoints</span><span>June 24, 2026</span><a href="https://logisticsviewpoints.com/2026/06/24/autonomous-tendering-is-coming-for-the-routing-guide/" target="_blank" style="color:var(--accent)">Read →</a></div>
+      </div>
+    </div>
+  </div>
 
-  <footer>
-    Sources: project44 / GlobeNewswire, gCaptain, Drewry / Ship Universe, Xeneta / India Shipping News / AJOT, C.H. Robinson · All primary items published June 16–22, 2026 (FourKites context noted as prior-week).<br>
-    Gnosis Freight Weekly Market Intelligence · Generated June 22, 2026
-  </footer>
-</div>
+</div><!-- /marketing -->
+
+<!-- ═══════════════════════════════════════════════════════
+     SALES TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-sales" class="tab-pane">
+
+  <div class="section">
+    <div class="section-title">This Week's Competitive Read <span>Quiet in-window</span></div>
+    <div class="strategic-para">
+      <strong>No major project44 / FourKites / Terminal49 product or distribution launch landed inside June 23–29.</strong> The standing context remains project44's April 9 LunaPath.ai acquisition (AI agent orchestration / execution agents). The live signal this week is thematic, not a competitor move: the industry is rapidly adopting "agentic execution" and "autonomous tendering" language (Logistics Viewpoints, ARC). Lead with the de minimis and Hormuz market narratives, and keep tying "agentic execution" explicitly to Gnosis's sovereign, primary-source data foundation before the term genericizes.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Competitive Battlecards</div>
+
+    <!-- FourKites Battlecard -->
+    <div class="battlecard">
+      <div class="battlecard-header">
+        <h3>FourKites</h3>
+        <div class="bc-meta">
+          <span>Founded 2014</span>
+          <span>HQ: Chicago</span>
+          <span>Funding: $400M+</span>
+          <span>G2: 4.3/5</span>
+        </div>
+      </div>
+      <div class="battlecard-grid">
+        <div class="bc-col">
+          <h4 class="them">Their Strengths</h4>
+          <ul class="bc-list">
+            <li>Large carrier network (1M+ carriers)</li>
+            <li>Strong brand recognition in enterprise</li>
+            <li>Deep integrations with legacy ERPs</li>
+          </ul>
+          <h4 class="them" style="margin-top:14px">Their Weaknesses</h4>
+          <ul class="bc-list">
+            <li>High price point — enterprise-only pricing</li>
+            <li>Complex implementation: 6–9 months typical</li>
+            <li>Poor customer support scores</li>
+            <li>Built for enterprise only — no mid-market path</li>
+            <li>Limited TMS functionality (visibility-first)</li>
+          </ul>
+        </div>
+        <div class="bc-col">
+          <h4 class="us">Gnosis Wins When</h4>
+          <ul class="bc-list">
+            <li>Mid-market prospect evaluating options</li>
+            <li>TMS + visibility bundle needed in one platform</li>
+            <li>Rapid deployment required (&lt;90 days)</li>
+            <li>Customer support is a priority for the buyer</li>
+            <li>Total cost of ownership matters</li>
+          </ul>
+          <h4 class="us" style="margin-top:14px">Key Differentiators vs FourKites</h4>
+          <ul class="bc-list">
+            <li>Gnosis deploys in weeks, not months</li>
+            <li>All-in-one TMS + visibility vs. point solution</li>
+            <li>Mid-market pricing with enterprise features</li>
+            <li>White-glove support included in all tiers</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bc-questions">
+        <h4>Killer Questions to Ask</h4>
+        <div class="bc-q">"How long did your last TMS implementation take?"</div>
+        <div class="bc-q">"What do you pay per shipment for visibility today?"</div>
+        <div class="bc-q">"How quickly can your team get a human on the phone when something goes wrong?"</div>
+      </div>
+    </div>
+
+    <!-- project44 Battlecard -->
+    <div class="battlecard">
+      <div class="battlecard-header">
+        <h3>project44</h3>
+        <div class="bc-meta">
+          <span>Founded 2014</span>
+          <span>HQ: Chicago</span>
+          <span>Funding: $900M+</span>
+          <span>G2: 4.1/5</span>
+        </div>
+      </div>
+      <div class="battlecard-grid">
+        <div class="bc-col">
+          <h4 class="them">Their Strengths</h4>
+          <ul class="bc-list">
+            <li>Massive data network and API ecosystem</li>
+            <li>Strong global coverage across modes</li>
+            <li>Agentic push via LunaPath.ai acquisition (Apr 2026)</li>
+          </ul>
+          <h4 class="them" style="margin-top:14px">Their Weaknesses</h4>
+          <ul class="bc-list">
+            <li>Visibility-only core — TMS not included</li>
+            <li>Extremely expensive — enterprise pricing mismatch</li>
+            <li>Long sales cycles, slow implementation</li>
+            <li>Agents ride on aggregated feeds, not sovereign data</li>
+            <li>SMB/mid-market pricing mismatch</li>
+          </ul>
+        </div>
+        <div class="bc-col">
+          <h4 class="us">Gnosis Wins When</h4>
+          <ul class="bc-list">
+            <li>Prospect needs TMS + visibility in one platform</li>
+            <li>Budget-conscious buyer doing TCO analysis</li>
+            <li>Faster time-to-value is a requirement</li>
+            <li>Data provenance / accuracy is under scrutiny</li>
+          </ul>
+          <h4 class="us" style="margin-top:14px">Key Differentiators vs project44</h4>
+          <ul class="bc-list">
+            <li>Sovereign, primary-source data vs. aggregated feeds</li>
+            <li>TMS + execution included — not a separate purchase</li>
+            <li>Lower total cost of ownership</li>
+            <li>Faster implementation timeline</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bc-questions">
+        <h4>Killer Questions to Ask</h4>
+        <div class="bc-q">"Are your AI agents acting on primary-source data, or on aggregated third-party feeds?"</div>
+        <div class="bc-q">"Are you managing your TMS and visibility platform separately today?"</div>
+        <div class="bc-q">"What's your total contract value across all freight tech vendors?"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Portcast Battlecard -->
+  <div class="battlecard">
+    <div class="battlecard-header">
+      <h3>Portcast</h3>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">Founded 2019 &middot; Singapore (Global) &middot; Series A &middot; Bidding on Gnosis keywords</div>
+      <span class="review-badge" style="margin-left:auto;flex-shrink:0">Emerging Threat</span>
+    </div>
+    <div class="battlecard-grid">
+      <div class="bc-col">
+        <h4 class="them">Their Strengths</h4>
+        <ul class="bc-list">
+          <li>AI-powered predictive ETA across 100+ carriers, 12,000+ ports, 5M+ data points/day</li>
+          <li>Strong APAC coverage; recognized in Gartner 2026 Market Guide for Logistics Network Visibility</li>
+          <li>Newer entrant with modern UI and API-first architecture</li>
+          <li>ISO 27001 certified; actively expanding to EU and North American markets</li>
+        </ul>
+        <h4 class="us" style="margin-top:14px">Gnosis Wins When...</h4>
+        <ul class="bc-list">
+          <li>Prospect needs a full freight operating system, not just visibility</li>
+          <li>Deal involves US rail, drayage, or inland transportation (Portcast is ocean-only)</li>
+          <li>Buyer is a North American enterprise with significant domestic logistics complexity</li>
+          <li>Prospect needs container payment / demurrage settlement (Portcast has no equivalent)</li>
+        </ul>
+      </div>
+      <div class="bc-col">
+        <h4 class="them">Their Weaknesses</h4>
+        <ul class="bc-list">
+          <li>Singapore-based with limited North American enterprise sales presence and references</li>
+          <li>Visibility-only platform — no TMS, no execution layer, no payment portal</li>
+          <li>No coverage of US rail or Class I railroad data (Gnosis's differentiator)</li>
+          <li>Younger company; limited enterprise case studies in US retail/manufacturing verticals</li>
+        </ul>
+        <h4 class="us" style="margin-top:14px">Key Differentiators vs Portcast</h4>
+        <ul class="bc-list">
+          <li>End-to-end freight OS — TMS + visibility + payments in one platform</li>
+          <li>Sovereign, primary-source data (ports, terminals, Class I railroads) vs. aggregated feeds</li>
+          <li>Deeper US enterprise presence and North American ICP alignment</li>
+          <li>Container Payment Portal (PayCargo) — unique in the category</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bc-questions">
+      <h4>Killer Questions to Ask</h4>
+      <div class="bc-q">"Does Portcast cover your US rail and inland drayage lanes, or only ocean?"</div>
+      <div class="bc-q">"Are you managing your visibility, TMS, and demurrage payments across three separate tools?"</div>
+      <div class="bc-q">"How many North American enterprise customers can they reference in your vertical?"</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Competitor Landscape <span>16 competitors mapped</span></div>
+    <div style="overflow-x:auto">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Category</th>
+          <th>Segment</th>
+          <th>HQ</th>
+          <th>Strengths</th>
+          <th>Key Weakness</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>FourKites</td><td>Visibility</td><td>Enterprise</td><td>Chicago</td><td>Real-time tracking, large carrier network</td><td>Expensive, slow implementation</td></tr>
+        <tr><td>project44</td><td>Visibility</td><td>Enterprise</td><td>Chicago</td><td>Best-in-class API, global data, agentic (LunaPath)</td><td>No native TMS, high cost, aggregated data</td></tr>
+        <tr><td>Descartes Systems</td><td>TMS + Visibility</td><td>Enterprise</td><td>Ontario</td><td>Broad suite, strong compliance</td><td>Legacy UX, complex</td></tr>
+        <tr><td>MercuryGate</td><td>TMS</td><td>Mid-Market</td><td>Cary, NC</td><td>Flexible TMS, good configurability</td><td>Dated interface</td></tr>
+        <tr><td>BluJay/E2open</td><td>TMS + Network</td><td>Enterprise</td><td>Austin</td><td>Large carrier network</td><td>Post-merger integration issues</td></tr>
+        <tr><td>Freightview</td><td>TMS</td><td>SMB</td><td>Kansas City</td><td>Simple LTL/TL quoting tool</td><td>Very limited features, no visibility</td></tr>
+        <tr><td>GoFreight</td><td>Freight Forwarding SaaS</td><td>SMB/Mid</td><td>—</td><td>Niche forwarder platform</td><td>Narrow use case</td></tr>
+        <tr><td>Shipthis</td><td>Freight Forwarding</td><td>SMB</td><td>India</td><td>Cloud forwarding platform</td><td>Limited US market presence</td></tr>
+        <tr><td>CargoWise</td><td>Freight Forwarding</td><td>Enterprise</td><td>Sydney</td><td>Deep global logistics ERP</td><td>Extremely complex, expensive</td></tr>
+        <tr><td>Inttra by E2Open</td><td>Ocean Booking</td><td>Enterprise</td><td>—</td><td>Ocean carrier connectivity</td><td>Ocean only, not full TMS</td></tr>
+        <tr><td>Vizion API</td><td>Container Tracking API</td><td>Tech-forward</td><td>—</td><td>API-first container visibility</td><td>Developer tool only, no UI</td></tr>
+        <tr><td>Terminal49</td><td>Container Tracking</td><td>SMB/Mid</td><td>San Francisco</td><td>Easy container tracking</td><td>Limited to ocean/port</td></tr>
+        <tr><td>CargoSmart</td><td>Ocean Visibility</td><td>Enterprise</td><td>Hong Kong</td><td>Strong Asia-Pacific coverage</td><td>Limited US adoption</td></tr>
+        <tr><td>OpenTrack</td><td>Rail Tracking</td><td>Mid-Market</td><td>—</td><td>Rail visibility specialist</td><td>Single mode only</td></tr>
+        <tr><td>Visiwise</td><td>Multimodal Visibility</td><td>Mid-Market</td><td>EU</td><td>European focus</td><td>Limited US presence</td></tr>
+        <tr><td>Portcast</td><td>Ocean Visibility + AI ETA</td><td>Mid-Market/Enterprise</td><td>Singapore</td><td>Predictive ETA, APAC coverage, Gartner recognized</td><td>Ocean-only, no TMS/payments, limited US presence</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">G2 Data for Sales Use</div>
+    <div class="review-card">
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">Use in Proposals &amp; Demos</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+        <div style="background:#0d1e3a;border:1px solid var(--border);border-radius:8px;padding:14px 20px;text-align:center">
+          <div style="font-size:28px;font-weight:800;color:var(--accent)">4.8</div>
+          <div style="font-size:11px;color:var(--text2)">Gnosis G2</div>
+        </div>
+        <div style="background:#0d1e3a;border:1px solid var(--border);border-radius:8px;padding:14px 20px;text-align:center">
+          <div style="font-size:28px;font-weight:800;color:var(--orange)">4.3</div>
+          <div style="font-size:11px;color:var(--text2)">FourKites G2</div>
+        </div>
+        <div style="background:#0d1e3a;border:1px solid var(--border);border-radius:8px;padding:14px 20px;text-align:center">
+          <div style="font-size:28px;font-weight:800;color:var(--red)">4.1</div>
+          <div style="font-size:11px;color:var(--text2)">project44 G2</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong style="color:var(--text)">Proposal line:</strong> "4.8/5 from 133 verified reviews — highest rated platform in our category on G2."</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong style="color:var(--text)">ROI stat:</strong> 89% of G2 reviewers reported positive ROI within their first year.</div>
+      <div style="font-size:13px;color:var(--text2)"><strong style="color:var(--text)">Implementation objection:</strong> When prospects raise implementation concerns, cite reviewer average: 6-week go-live vs. 6–9 months for FourKites.</div>
+    </div>
+  </div>
+
+</div><!-- /sales -->
+
+<!-- ═══════════════════════════════════════════════════════
+     EXECUTIVE TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-executive" class="tab-pane">
+
+  <div class="section">
+    <div class="section-title">Weekly Strategic Summary</div>
+    <div class="strategic-para">
+      The week of June 23–29, 2026 is defined by a <strong>structural policy shock and a still-climbing rate environment</strong>. On June 24, CBP published an interim final rule <strong>indefinitely suspending the de minimis exemption</strong> — ending duty-free, low-clearance entry for sub-$800 shipments across ocean, air, and truck. For direct-to-consumer and emerging brands, the direct-from-factory model that many built their supply chains around is gone overnight; the required pivot to bulk ocean freight, bonded warehousing, and formal customs entries pushes volume and clearance complexity <em>toward</em> exactly the containerized flows Gnosis orchestrates. This is the highest-leverage narrative of the week and one no competitor has clearly claimed on the importer-operations angle.
+    </div>
+    <div class="strategic-para">
+      On the water, the <strong>Hormuz "reopening" reversed into renewed risk</strong>. On June 25 Iran's IRGC rejected a new Oman/IMO-coordinated transit route as "unacceptable," and a cargo ship was reportedly struck off Oman on that route — undercutting the prior week's optimism and keeping Cape-of-Good-Hope diversions and transshipment congestion firmly in place. Rates responded accordingly: <strong>Drewry's WCI rose 5% to $4,166/40ft</strong> (Transpacific to USWC +19% to ~$5,700/FEU), while separate late-June data put Asia–USWC over $6,800 and USEC past $8,100, with carriers signaling further GRIs toward $10,000/FEU. Xeneta warns there is "no hiding place" for shippers and does not expect networks to normalize until ~mid-September 2026 — a live, high-urgency buying trigger for every enterprise importer in the ICP.
+    </div>
+    <div class="strategic-para">
+      <strong>Competitively, the week was quiet on product but loud on category language.</strong> No project44 / FourKites / Terminal49 launch landed in-window; the standing context is project44's April LunaPath.ai acquisition. But "autonomous tendering" and "TMS as an operating model" both trended (Logistics Viewpoints, Jun 24–25), and ARC framed supply-chain AI as moving "from architecture to execution." The market is validating Gnosis's execution/orchestration thesis — and adopting the agentic vocabulary fast. Gnosis should amplify the validation while sharpening the differentiator that competitors can't easily copy: <strong>sovereign, primary-source data</strong> as the foundation any real "agentic execution" has to stand on.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Global Shipping Risk Monitor</div>
+    <div class="risk-monitor">
+      <div class="risk-item">
+        <div class="risk-indicator red"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="risk-name">STRAIT OF HORMUZ</div>
+            <span class="risk-status critical">CRITICAL</span>
+          </div>
+          <div class="risk-detail">June 25: IRGC rejected the new Oman/IMO transit route as "unacceptable"; a cargo ship was reportedly struck off Oman on that route. Reopening fragile despite the US–Iran MOU; Xeneta sees networks recovering only ~mid-September.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-indicator red"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="risk-name">US CUSTOMS — DE MINIMIS SUSPENSION</div>
+            <span class="risk-status critical">CRITICAL</span>
+          </div>
+          <div class="risk-detail">June 24 interim final rule ends duty-free entry for sub-$800 shipments across all modes. Formal/informal customs entry + standard tariffs now required; DTC/emerging brands must re-architect toward bulk ocean + bonded warehousing.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-indicator red"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="risk-name">OCEAN RATES / EARLY PEAK</div>
+            <span class="risk-status critical">CRITICAL</span>
+          </div>
+          <div class="risk-detail">Drewry WCI +5% to $4,166/40ft (Jun 25); Asia–USWC over $6,800/FEU, USEC past $8,100; carriers signaling GRIs toward $10,000. Front-loaded peak + diversions = space scarcity and cost pressure for importers.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-indicator red"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="risk-name">RED SEA / SUEZ CANAL</div>
+            <span class="risk-status critical">CRITICAL</span>
+          </div>
+          <div class="risk-detail">Diversions via Cape of Good Hope remain the default; transshipment hubs (Singapore, Port Klang) congested from workarounds. +14 days transit vs. Suez.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-indicator yellow"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="risk-name">PORT CONGESTION — US GATEWAYS</div>
+            <span class="risk-status watch">WATCH</span>
+          </div>
+          <div class="risk-detail">Front-loaded peak volume landing at LA/LB and East/Gulf gateways; watch dwell times and demurrage exposure as bulk import flows accelerate ahead of July cost changes.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-indicator red"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="risk-name">TARIFF ENVIRONMENT</div>
+            <span class="risk-status critical">CRITICAL</span>
+          </div>
+          <div class="risk-detail">Front-loading ahead of expected July US tariff/fuel changes is compressing peak. De minimis suspension adds a second, structural layer of import-cost and compliance pressure.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-indicator yellow"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="risk-name">ATLANTIC HURRICANE SEASON</div>
+            <span class="risk-status prepare">PREPARE</span>
+          </div>
+          <div class="risk-detail">Season active through November. Gulf/East Coast port contingency planning recommended. No active named threats to US gateways at report time.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Market Signals</div>
+    <div class="market-signals">
+      <div class="market-signal">
+        <div class="ms-label">Drewry WCI (40ft)</div>
+        <div class="ms-value">$4,166</div>
+        <div class="ms-change up">+5% WoW (Jun 25)</div>
+      </div>
+      <div class="market-signal">
+        <div class="ms-label">Asia–USWC Spot</div>
+        <div class="ms-value">$6,800+</div>
+        <div class="ms-change up">+23% WoW per FEU</div>
+      </div>
+      <div class="market-signal">
+        <div class="ms-label">Asia–USEC Spot</div>
+        <div class="ms-value">$8,100+</div>
+        <div class="ms-change up">GRIs signaled toward $10k</div>
+      </div>
+      <div class="market-signal">
+        <div class="ms-label">Network Recovery (Xeneta)</div>
+        <div class="ms-value">~Mid-Sep</div>
+        <div class="ms-change up">months out, not weeks</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /executive -->
+
+<!-- ═══════════════════════════════════════════════════════
+     INDUSTRIES TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-industries" class="tab-pane">
+
+  <div class="section">
+    <div class="section-title">Prospect Industry News <span>Signals from your prospects' verticals</span></div>
+    <div class="strategic-para">
+      Recent news about the kinds of companies Gnosis sells to — <strong>BCOs</strong> (retailer/manufacturer importers &amp; exporters) and <strong>LSPs</strong> (carriers, forwarders &amp; railroads). Account-specific moves (new supply-chain leadership, restructurings, network investments) are prioritized as sales signals, followed by vertical trends. Neutral summaries; items are dated as published — the freshest verifiable trade-press coverage currently runs mid-May through late June, and this feed refreshes each week.
+    </div>
+    <div class="sub-header">Sources monitored</div>
+    <div class="pub-tiles">
+      <div class="pub-tile">Retail Dive</div>
+      <div class="pub-tile">Retail Brew</div>
+      <div class="pub-tile">RetailWire</div>
+      <div class="pub-tile">NRF</div>
+      <div class="pub-tile">Manufacturing Dive</div>
+      <div class="pub-tile">Manufacturing Digital</div>
+      <div class="pub-tile">Supply Chain Dive</div>
+      <div class="pub-tile">FreightWaves</div>
+      <div class="pub-tile">Supply Chain Digital</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">BCOs — Retailers &amp; Manufacturers <span>Importer/exporter prospects</span></div>
+    <div class="pub-feed">
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Account · Target</span>
+        <div class="pub-article-title"><a href="https://www.retaildive.com/news/target-former-walmart-exec-supply-chain-logistics-chief/820611/" target="_blank">Target taps former Walmart exec as supply chain, logistics chief</a></div>
+        <div class="pub-article-meta"><span>Retail Dive / Supply Chain Dive</span><span>May 19, 2026</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">Target named ex-Walmart operations leader Jeff England as EVP and chief global supply chain and logistics officer, effective May 31, succeeding company veteran Gretchen McCarthy. The hire is part of CEO Michael Fiddelke's turnaround push focused on inventory, delivery, and efficiency.</div>
+      </div>
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Account · Walmart</span>
+        <div class="pub-article-title"><a href="https://www.retaildive.com/news/walmart-operations-executives-leave-leadership-shakeup/821178/" target="_blank">Walmart operations execs latest to leave amid leadership shakeup</a></div>
+        <div class="pub-article-meta"><span>Retail Dive</span><span>May 22, 2026</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">Sam's Club COO Tom Ward and Walmart store-operations chief Cedric Clark are departing as new CEO John Furner reshapes his leadership team with a stated focus on AI in operations. Replacements had not yet been named at the time of reporting.</div>
+      </div>
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Account · Gap Inc.</span>
+        <div class="pub-article-title"><a href="https://www.retaildive.com/news/old-navy-fashion-misses-spell-trouble-gap-inc-q1-earnings/821459/" target="_blank">Fashion misses at Old Navy spell trouble for Gap Inc.</a></div>
+        <div class="pub-article-meta"><span>Retail Dive</span><span>May 29, 2026</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">Gap Inc. posted Q1 net sales of $3.5B (up 1%, below estimates); the Gap brand rose 10% on comps while Old Navy was roughly flat on weak women's dresses, and shares fell sharply. The company trimmed its full-year sales outlook while raising adjusted EPS guidance.</div>
+      </div>
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Account · Mondelēz</span>
+        <div class="pub-article-title"><a href="https://www.supplychaindive.com/news/mondelez-taps-ai-for-distribution-centers-to-cut-costs/820067/" target="_blank">Mondelēz taps AI for distribution centers to cut costs</a></div>
+        <div class="pub-article-meta"><span>Supply Chain Dive / Food Dive</span><span>May 2026</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">Mondelēz plans to deploy automation and AI across up to five distribution centers in its direct-store-delivery network and remake part of its U.S. manufacturing — part of a $1.2B multi-year supply chain and ERP overhaul launched in 2024. The snack maker expects faster replenishment, lower stock, and cost cuts across the 55 branches those centers serve.</div>
+      </div>
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Vertical trend · Retail / Trade</span>
+        <div class="pub-article-title"><a href="https://www.retaildive.com/news/cbp-raises-accepted-tariff-refunds-to-85b/821333/" target="_blank">CBP raises accepted tariff refunds to $85B</a></div>
+        <div class="pub-article-meta"><span>Retail Dive / Supply Chain Dive</span><span>June 2026</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">CBP said it is on track to process roughly $85B in refunds for invalidated tariffs via its CAPE portal, with about $20.6B in certified refunds completed and more than 15.85M entries accepted for duty removal. Many importers are still waiting for their entries to be processed.</div>
+      </div>
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Vertical trend · Manufacturing</span>
+        <div class="pub-article-title"><a href="https://www.manufacturingdive.com/news/tariffs-us-businesses-declining-sales-price-increases/816136/" target="_blank">A year into tariffs, US businesses see declining sales, plan price increases: KPMG survey</a></div>
+        <div class="pub-article-meta"><span>Manufacturing Dive</span><span>Mar 31, 2026</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">KPMG found 34% of companies now pass on more than half of their tariff costs (up from 13% a year earlier) and 82% report declining foreign sales. Firms are shifting from evaluating to executing supply-chain changes, with 26% formally planning or actively executing reshoring, up from 10% in September 2025.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">LSPs — Carriers, Forwarders &amp; Rail <span>Logistics-provider prospects</span></div>
+    <div class="pub-feed">
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Account · FedEx</span>
+        <div class="pub-article-title"><a href="https://www.supplychaindive.com/news/fedex-board-approves-trucking-business-spinoff/820379/" target="_blank">FedEx board approves trucking business spinoff; FedEx Freight (FDXF) begins trading</a></div>
+        <div class="pub-article-meta"><span>Supply Chain Dive / Trucking Dive</span><span>May 13, 2026 (FDXF trading Jun 1)</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">FedEx's board approved the spinoff of its LTL unit, FedEx Freight, distributing 80.1% of shares to stockholders; FDXF began trading on the NYSE June 1, with FedEx retaining 19.9% temporarily. It completes a separation first announced in December 2024.</div>
+      </div>
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Account · BNSF</span>
+        <div class="pub-article-title"><a href="https://www.freightwaves.com/news/bnsf-ops-chief-out-after-just-five-months" target="_blank">BNSF ops chief out after just five months</a></div>
+        <div class="pub-article-meta"><span>FreightWaves</span><span>May 19, 2026</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">BNSF promoted Craig Morehouse to EVP and chief operations officer after Matt Garland stepped down following five months in the top operating role. Morehouse oversees transportation, engineering, mechanical, service design, safety, and training.</div>
+      </div>
+
+      <div class="pub-article">
+        <span class="vert-tag" style="margin-bottom:6px">Vertical trend · Ocean / Carriers</span>
+        <div class="pub-article-title"><a href="https://www.supplychaindive.com/news/muted-peak-season-expected-as-ocean-shippers-delay-contract-signing/820397/" target="_blank">Muted peak season expected as ocean shippers delay contract signing</a></div>
+        <div class="pub-article-meta"><span>Supply Chain Dive</span><span>2026</span></div>
+        <div style="font-size:12.5px;color:var(--text2);margin-top:6px">U.S. shippers are hesitating to sign long-term ocean contracts amid Iran-war uncertainty, pushing more volume onto the spot market where carriers charge premiums; analysts expect gradual softening rather than a sharp drop. Dollar Tree and Bob's Discount Furniture cited confidence in freight contracts they had already secured.</div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /industries -->
+
+<!-- ═══════════════════════════════════════════════════════
+     THOUGHT LEADER PROMPTS TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-prompts" class="tab-pane">
+
+  <div class="section">
+    <div class="section-title">Thought Leader Prompts <span>For your team's personal posts</span></div>
+    <div class="strategic-para">
+      Ready-to-use prompts drawn from this week's articles and market insights. Each is written so a Gnosis team member can paste it into their AI tool of choice (or use it as a writing brief) to draft a <strong>personal</strong> LinkedIn, X/Twitter, or Reddit post in their own voice. Tags show the best-fit platform(s). Swap in a personal anecdote to make each one land.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prompts from This Week's Insights</div>
+
+    <div class="prompt-card">
+      <div class="prompt-tags"><span class="ptag ptag-li">LinkedIn</span><span class="ptag ptag-x">X / Twitter</span></div>
+      <div class="prompt-title">The end of de minimis</div>
+      <div class="prompt-ref">Ref: CBP interim final rule, June 24 · Logistics Viewpoints round-up</div>
+      <div class="prompt-box">"Write a punchy LinkedIn post (150–200 words) in a first-person operator voice about CBP's June 24 suspension of the de minimis exemption. Explain in plain English why direct-from-factory DTC brands just lost their cost advantage, and what the pivot to bulk ocean freight and bonded warehousing actually requires. End with one practical question for supply chain leaders: what's your 30-day plan? Avoid hype; sound like someone who's lived through a customs change."</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-tags"><span class="ptag ptag-li">LinkedIn</span></div>
+      <div class="prompt-title">Reopening on paper, risk on the water</div>
+      <div class="prompt-ref">Ref: IRGC rejects new Hormuz route + ship struck off Oman, June 25 (Al Jazeera / CNBC)</div>
+      <div class="prompt-box">"Draft a contrarian-but-fair LinkedIn post about why the Hormuz 'reopening' isn't real for container shippers yet. Use the June 25 facts: Iran's IRGC rejected the new Oman/IMO route as 'unacceptable' and a cargo ship was reportedly struck on it. Make the point that a diplomatic MOU doesn't reroute cargo or restore ETAs, and that planning on premature relief is how you blow delivery windows. Keep it under 180 words, confident, no fear-mongering."</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-tags"><span class="ptag ptag-x">X / Twitter</span><span class="ptag ptag-li">LinkedIn</span></div>
+      <div class="prompt-title">Carriers are signaling $10k a box</div>
+      <div class="prompt-ref">Ref: Drewry WCI +5% to $4,166; Asia–USWC $6,800+; GRIs toward $10k (Jun 25–26)</div>
+      <div class="prompt-box">"Write a short, data-led X/Twitter thread (4–5 posts) on the June 2026 rate spike: Drewry WCI up 5% to $4,166/40ft, Asia–USWC over $6,800/FEU, carriers signaling GRIs toward $10,000. Explain what an early, front-loaded peak means for importers, and land the take that a contract guarantees a rate, not a slot — so knowing which containers to prioritize is the whole game. Punchy, numbers-first, no emojis."</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-tags"><span class="ptag ptag-li">LinkedIn</span></div>
+      <div class="prompt-title">Execution is the new visibility</div>
+      <div class="prompt-ref">Ref: "Autonomous tendering" + "TMS as an operating model," Logistics Viewpoints (Jun 24–25)</div>
+      <div class="prompt-box">"Write a thoughtful LinkedIn post reacting to this week's 'autonomous tendering' and 'TMS is becoming an operating model' pieces. Argue that the industry is finally admitting visibility alone isn't enough — execution is the point — but add the nuance that automated execution is only as good as the data underneath it. Make the case for primary-source, sovereign data (originated at ports, terminals, carriers, and Class I railroads) without sounding like an ad. ~200 words, sound like a practitioner sharing a POV."</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-tags"><span class="ptag ptag-reddit">Reddit</span></div>
+      <div class="prompt-title">Reddit discussion starter — de minimis fallout</div>
+      <div class="prompt-ref">Ref: CBP de minimis suspension · r/supplychain, r/logistics</div>
+      <div class="prompt-box">"Write a genuine, non-promotional Reddit post for r/supplychain or r/logistics asking the community how they're handling CBP's de minimis suspension. Frame it as a real operator question: 'For those of you who ran direct-from-factory under $800 — what's your actual plan now? Bulk ocean + bonded warehouse? 3PL? Curious what timelines and cost hits people are seeing.' Keep it conversational, no company name, no sales pitch — the goal is a real discussion."</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-tags"><span class="ptag ptag-li">LinkedIn</span><span class="ptag ptag-reddit">Reddit</span></div>
+      <div class="prompt-title">The bill nobody priced — demurrage &amp; detention</div>
+      <div class="prompt-ref">Ref: rate-spike + congestion context; peak-season D&amp;D exposure</div>
+      <div class="prompt-box">"Draft a post (LinkedIn version + a shorter Reddit version) making the point that in a congested, front-loaded peak, the freight rate is the visible bill and demurrage/detention is the hidden one — often several times larger per container. Explain how free time starts at discharge, why forwarders end up holding the bill, and why timestamped, primary-source milestone data is what wins disputes and prevents surprise invoices. Practical and specific, not salesy."</div>
+    </div>
+
+  </div>
+</div><!-- /prompts -->
+
+<!-- ═══════════════════════════════════════════════════════
+     COMPANY HUB TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-hub" class="tab-pane">
+
+  <div class="section">
+    <div class="section-title">Gnosis Freight — Recent Company News</div>
+
+    <div class="hub-post">
+      <div class="hub-post-meta">2026 — FreightWaves FreightTech 100</div>
+      <div class="hub-post-text">Gnosis Freight recognized in the 2026 FreightTech 100 by FreightWaves, honoring the most innovative companies transforming global logistics.</div>
+      <a class="hub-post-link" href="https://www.gnosisfreight.com/insights" target="_blank">View Insights →</a>
+    </div>
+
+    <div class="hub-post">
+      <div class="hub-post-meta">April 2026 — G2 Best Software Awards</div>
+      <div class="hub-post-text">Named to G2's 2026 Best Software Awards for Supply Chain &amp; Logistics and ranked among the Top 100 Fastest Growing Products as shippers seek greater operational control.</div>
+      <a class="hub-post-link" href="https://www.prnewswire.com/news-releases/gnosis-freight-named-to-g2s-2026-best-software-awards-as-global-supply-chains-seek-greater-operational-control-302732126.html" target="_blank">Read release →</a>
+    </div>
+
+    <div class="hub-post">
+      <div class="hub-post-meta">2026 — Partnership</div>
+      <div class="hub-post-text">Prinx Chengshan Tire North America partnered with Gnosis Freight to deliver AI-powered freight execution and visibility at enterprise scale.</div>
+      <a class="hub-post-link" href="https://www.gnosisfreight.com/insights" target="_blank">View Insights →</a>
+    </div>
+
+    <div class="hub-post">
+      <div class="hub-post-meta">2026 — Container Payment Portal</div>
+      <div class="hub-post-text">Gnosis Freight, Hapag-Lloyd, and PayCargo announced a first-of-its-kind Container Payment Portal — settle demurrage, release containers, and keep cargo moving.</div>
+      <a class="hub-post-link" href="https://linkedin.com/company/gnosis-freight" target="_blank">View on LinkedIn →</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Publications &amp; Article Sources</div>
+    <div class="pub-tiles">
+      <div class="pub-tile">FreightWaves</div>
+      <div class="pub-tile">JOC</div>
+      <div class="pub-tile">Supply Chain Dive</div>
+      <div class="pub-tile">DC Velocity</div>
+      <div class="pub-tile">Logistics Management</div>
+      <div class="pub-tile">Logistics Viewpoints</div>
+      <div class="pub-tile">gCaptain</div>
+      <div class="pub-tile">Drewry</div>
+      <div class="pub-tile">Xeneta</div>
+      <div class="pub-tile">SAFETY4SEA</div>
+      <div class="pub-tile">AJOT</div>
+      <div class="pub-tile">Supply Chain Brain</div>
+      <div class="pub-tile">Let's Talk Supply Chain</div>
+      <div class="pub-tile">Supply Chain Now</div>
+      <div class="pub-tile">Supply Chain Digital</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Podcast Picks This Week</div>
+
+    <div class="podcast-card">
+      <div class="podcast-icon">🎙</div>
+      <div>
+        <div class="podcast-name">Freight Waves Now</div>
+        <div class="podcast-host">Daily freight market update</div>
+        <a class="podcast-link" href="https://freightwaves.com/podcast" target="_blank">freightwaves.com/podcast</a>
+      </div>
+    </div>
+
+    <div class="podcast-card">
+      <div class="podcast-icon">🎙</div>
+      <div>
+        <div class="podcast-name">Let's Talk Supply Chain</div>
+        <div class="podcast-host">Sarah Barnes-Humphrey</div>
+        <a class="podcast-link" href="https://letstalksc.com" target="_blank">letstalksc.com</a>
+      </div>
+    </div>
+
+    <div class="podcast-card">
+      <div class="podcast-icon">🎙</div>
+      <div>
+        <div class="podcast-name">Supply Chain Now</div>
+        <div class="podcast-host">Scott Luton</div>
+        <a class="podcast-link" href="https://supplychainnow.com" target="_blank">supplychainnow.com</a>
+      </div>
+    </div>
+
+    <div class="podcast-card">
+      <div class="podcast-icon">🎙</div>
+      <div>
+        <div class="podcast-name">The Dockflow Dispatch</div>
+        <div class="podcast-host">Container-ops &amp; demurrage deep-dives</div>
+        <a class="podcast-link" href="#" target="_blank">Available on Spotify &amp; Apple</a>
+      </div>
+    </div>
+
+    <div class="podcast-card">
+      <div class="podcast-icon">🎙</div>
+      <div>
+        <div class="podcast-name">The Digital Supply Chain</div>
+        <div class="podcast-host">Tom Raftery</div>
+        <a class="podcast-link" href="https://futureinsightsnetwork.com/podcast" target="_blank">futureinsightsnetwork.com/podcast</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Reddit Communities</div>
+    <div class="reddit-grid">
+      <div class="reddit-card">
+        <div class="reddit-name">r/supplychain</div>
+        <div class="reddit-members">145K members</div>
+        <div class="reddit-desc">General supply chain discussion</div>
+      </div>
+      <div class="reddit-card">
+        <div class="reddit-name">r/logistics</div>
+        <div class="reddit-members">89K members</div>
+        <div class="reddit-desc">Freight and logistics operations</div>
+      </div>
+      <div class="reddit-card">
+        <div class="reddit-name">r/SupplyChainLogistics</div>
+        <div class="reddit-members">28K members</div>
+        <div class="reddit-desc">Logistics operations and tech</div>
+      </div>
+      <div class="reddit-card">
+        <div class="reddit-name">r/freightforwarding</div>
+        <div class="reddit-members">31K members</div>
+        <div class="reddit-desc">Freight forwarder community</div>
+      </div>
+      <div class="reddit-card">
+        <div class="reddit-name">r/procurement</div>
+        <div class="reddit-members">44K members</div>
+        <div class="reddit-desc">Sourcing and procurement</div>
+      </div>
+      <div class="reddit-card">
+        <div class="reddit-name">r/SupplyChainTalks</div>
+        <div class="reddit-members">15K members</div>
+        <div class="reddit-desc">SC strategy and trends discussion</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /hub -->
+
+<!-- ═══════════════════════════════════════════════════════
+     ECOSYSTEM TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-ecosystem" class="tab-pane">
+
+  <div class="section">
+    <div class="section-title">Market Partners &amp; Integrations <span>21 companies</span></div>
+    <div class="eco-grid">
+      <div class="eco-card"><div class="eco-name">PayCargo</div><div class="eco-type">Freight Payment</div><div class="eco-desc">Ocean/air payments platform — Container Payment Portal partner</div></div>
+      <div class="eco-card"><div class="eco-name">SAP</div><div class="eco-type">ERP Integration</div><div class="eco-desc">Enterprise resource planning</div></div>
+      <div class="eco-card"><div class="eco-name">Samsara</div><div class="eco-type">Fleet Telematics</div><div class="eco-desc">IoT and GPS tracking</div></div>
+      <div class="eco-card"><div class="eco-name">Motive (KeepTruckin)</div><div class="eco-type">Fleet Management</div><div class="eco-desc">ELD and TMS for carriers</div></div>
+      <div class="eco-card"><div class="eco-name">Descartes Macropoint</div><div class="eco-type">Carrier Visibility</div><div class="eco-desc">Real-time truck tracking</div></div>
+      <div class="eco-card"><div class="eco-name">Sendcloud</div><div class="eco-type">E-commerce Shipping</div><div class="eco-desc">Multi-carrier shipping platform</div></div>
+      <div class="eco-card"><div class="eco-name">GoComet</div><div class="eco-type">Freight Procurement</div><div class="eco-desc">Rate management and tendering</div></div>
+      <div class="eco-card"><div class="eco-name">Descartes Aljex</div><div class="eco-type">TMS</div><div class="eco-desc">Freight broker TMS</div></div>
+      <div class="eco-card"><div class="eco-name">Xero</div><div class="eco-type">Accounting</div><div class="eco-desc">SMB accounting integration</div></div>
+      <div class="eco-card"><div class="eco-name">Narvar</div><div class="eco-type">Post-Purchase</div><div class="eco-desc">Returns and delivery experience</div></div>
+      <div class="eco-card"><div class="eco-name">EasyShip</div><div class="eco-type">E-commerce Shipping</div><div class="eco-desc">Global shipping rates</div></div>
+      <div class="eco-card"><div class="eco-name">Freightview</div><div class="eco-type">LTL Quoting</div><div class="eco-desc">Simple freight quoting</div></div>
+      <div class="eco-card"><div class="eco-name">ShipHero</div><div class="eco-type">WMS</div><div class="eco-desc">Warehouse management for e-commerce</div></div>
+      <div class="eco-card"><div class="eco-name">FareYe</div><div class="eco-type">Last-Mile Delivery</div><div class="eco-desc">Delivery management platform</div></div>
+      <div class="eco-card"><div class="eco-name">Apex</div><div class="eco-type">Fuel Cards</div><div class="eco-desc">Carrier payment and fuel</div></div>
+      <div class="eco-card"><div class="eco-name">IBM Planning Analytics</div><div class="eco-type">Demand Planning</div><div class="eco-desc">AI-powered supply planning</div></div>
+      <div class="eco-card"><div class="eco-name">Swap Commerce</div><div class="eco-type">Returns</div><div class="eco-desc">E-commerce returns platform</div></div>
+      <div class="eco-card"><div class="eco-name">Zoho Inventory</div><div class="eco-type">Inventory Mgmt</div><div class="eco-desc">SMB inventory and order management</div></div>
+      <div class="eco-card"><div class="eco-name">SONAR</div><div class="eco-type">Freight Data</div><div class="eco-desc">FreightWaves market intelligence</div></div>
+      <div class="eco-card"><div class="eco-name">EZO</div><div class="eco-type">Asset Tracking</div><div class="eco-desc">Equipment and asset management</div></div>
+      <div class="eco-card"><div class="eco-name">Fleetio</div><div class="eco-type">Fleet Management</div><div class="eco-desc">Vehicle maintenance and compliance</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">3PL &amp; Carrier Landscape</div>
+
+    <div class="carrier-section">
+      <div class="carrier-section-title">Ocean Carriers</div>
+      <div class="carrier-grid">
+        <div class="carrier-card">
+          <div class="carrier-name">MSC</div>
+          <div class="carrier-sub">Mediterranean Shipping Company — World's largest ocean carrier</div>
+          <div class="carrier-detail">760 vessels | Global route coverage | Market share: ~19%</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">Maersk</div>
+          <div class="carrier-sub">#2 ocean carrier, integrated logistics focus</div>
+          <div class="carrier-detail">700+ vessels | Integrated TMS/ocean approach — key competitive signal</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">CMA CGM</div>
+          <div class="carrier-sub">#3 carrier — French group</div>
+          <div class="carrier-detail">Growing tech investments via CEVA Logistics acquisition</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">COSCO</div>
+          <div class="carrier-sub">Chinese state carrier</div>
+          <div class="carrier-detail">Strong Asia routes | Geopolitical risk factor for US shippers</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">Hapag-Lloyd</div>
+          <div class="carrier-sub">German carrier</div>
+          <div class="carrier-detail">Gemini Alliance with Maersk (2025) — combined schedule reliability play</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carrier-section">
+      <div class="carrier-section-title">Ground — Trucking &amp; Parcel</div>
+      <div class="carrier-grid">
+        <div class="carrier-card">
+          <div class="carrier-name">UPS</div>
+          <div class="carrier-sub">Full TL/LTL/Parcel</div>
+          <div class="carrier-detail">Revenue: $91B | Strong ground network nationwide</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">FedEx</div>
+          <div class="carrier-sub">Ground / Express / LTL</div>
+          <div class="carrier-detail">Revenue: $88B | FedEx Freight for LTL</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">XPO Logistics</div>
+          <div class="carrier-sub">Pure-play LTL leader</div>
+          <div class="carrier-detail">~26,000 trucks | LTL network focus</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">J.B. Hunt</div>
+          <div class="carrier-sub">Intermodal + TL leader</div>
+          <div class="carrier-detail">Strong drayage and rail connections | 360box platform</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">Knight-Swift</div>
+          <div class="carrier-sub">Largest TL carrier</div>
+          <div class="carrier-detail">Merged entity — strong truckload capacity</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carrier-section">
+      <div class="carrier-section-title">Rail</div>
+      <div class="carrier-grid">
+        <div class="carrier-card">
+          <div class="carrier-name">BNSF</div>
+          <div class="carrier-sub">Largest US railroad — Berkshire Hathaway</div>
+          <div class="carrier-detail">Strong West Coast intermodal network</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">Union Pacific</div>
+          <div class="carrier-sub">Western US network</div>
+          <div class="carrier-detail">Major intermodal + inland orchestration backbone</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">CSX</div>
+          <div class="carrier-sub">Eastern US network</div>
+          <div class="carrier-detail">Intermodal and bulk commodities focus</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">Norfolk Southern</div>
+          <div class="carrier-sub">Southeast / Midwest network</div>
+          <div class="carrier-detail">Intermodal focus — growing e-commerce share</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">CPKC</div>
+          <div class="carrier-sub">Canadian Pacific Kansas City</div>
+          <div class="carrier-detail">First single-line US-Mexico-Canada railroad</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carrier-section">
+      <div class="carrier-section-title">Air Freight</div>
+      <div class="carrier-grid">
+        <div class="carrier-card">
+          <div class="carrier-name">UPS Airlines</div>
+          <div class="carrier-sub">#1 US air freight</div>
+          <div class="carrier-detail">Integrated ground + air network</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">FedEx Express</div>
+          <div class="carrier-sub">#2 US air freight</div>
+          <div class="carrier-detail">Hub: Memphis | Global express network</div>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-name">DHL Express</div>
+          <div class="carrier-sub">Global air freight leader</div>
+          <div class="carrier-detail">Strongest international network — 220+ countries</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Major US Ports</div>
+    <div style="overflow-x:auto">
+    <table class="port-table">
+      <thead>
+        <tr><th>Port</th><th>Location</th><th>TEU Capacity/Yr</th><th>Primary Use</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Port of Los Angeles</td><td>San Pedro, CA</td><td>10.7M</td><td>Trans-Pacific imports</td><td><span class="status-badge status-elevated">Elevated</span></td></tr>
+        <tr><td>Port of Long Beach</td><td>Long Beach, CA</td><td>9.4M</td><td>Asia imports, auto</td><td><span class="status-badge status-elevated">Elevated</span></td></tr>
+        <tr><td>Port of NY/NJ</td><td>Bayonne, NJ</td><td>8.1M</td><td>Trans-Atlantic, East Coast distribution</td><td><span class="status-badge status-elevated">Elevated</span></td></tr>
+        <tr><td>Port of Savannah</td><td>Savannah, GA</td><td>6.0M</td><td>East Coast — fastest growing</td><td><span class="status-badge status-nominal">Nominal</span></td></tr>
+        <tr><td>Port of Houston</td><td>Houston, TX</td><td>3.8M</td><td>Gulf Coast, petrochemicals</td><td><span class="status-badge status-nominal">Nominal</span></td></tr>
+        <tr><td>Port of Seattle/Tacoma</td><td>WA</td><td>3.9M</td><td>Pacific Northwest, Asia</td><td><span class="status-badge status-nominal">Nominal</span></td></tr>
+        <tr><td>Port of Charleston</td><td>Charleston, SC</td><td>3.0M</td><td>Growing Southeast gateway</td><td><span class="status-badge status-nominal">Nominal</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Key Shipping Lanes</div>
+
+    <div class="lane-card">
+      <div class="lane-info">
+        <div class="lane-name">Trans-Pacific (Asia → US West Coast)</div>
+        <div class="lane-route">Shanghai / Yantian → LA / Long Beach</div>
+        <div class="lane-transit">Transit: 14–18 days</div>
+      </div>
+      <span class="status-badge status-critical">Rates +19–23% WoW</span>
+    </div>
+
+    <div class="lane-card">
+      <div class="lane-info">
+        <div class="lane-name">Trans-Pacific (Asia → US East Coast)</div>
+        <div class="lane-route">China → USEC via Panama / all-water</div>
+        <div class="lane-transit">Spot past $8,100/FEU; GRIs signaled toward $10k</div>
+      </div>
+      <span class="status-badge status-critical">Rates +13%+ WoW</span>
+    </div>
+
+    <div class="lane-card">
+      <div class="lane-info">
+        <div class="lane-name">Trans-Atlantic (Europe → US East Coast)</div>
+        <div class="lane-route">Rotterdam / Hamburg → NY/NJ</div>
+        <div class="lane-transit">Transit: 8–12 days</div>
+      </div>
+      <span class="status-badge status-elevated">Firming</span>
+    </div>
+
+    <div class="lane-card">
+      <div class="lane-info">
+        <div class="lane-name">Red Sea / Suez (Europe ↔ Asia)</div>
+        <div class="lane-route">Via Suez Canal — still severely disrupted</div>
+        <div class="lane-transit">90% rerouting via Cape of Good Hope</div>
+      </div>
+      <span class="status-badge status-critical">CRITICAL — Diversions Ongoing</span>
+    </div>
+
+    <div class="lane-card">
+      <div class="lane-info">
+        <div class="lane-name">Strait of Hormuz</div>
+        <div class="lane-route">Gulf gateway — reopening disputed (IRGC vs. Oman/IMO route)</div>
+        <div class="lane-transit">Recovery not expected until ~mid-September (Xeneta)</div>
+      </div>
+      <span class="status-badge status-critical">CRITICAL — Route Dispute</span>
+    </div>
+
+    <div class="lane-card">
+      <div class="lane-info">
+        <div class="lane-name">SE Asia Transshipment Hubs</div>
+        <div class="lane-route">Singapore / Port Klang — congested from Hormuz workarounds</div>
+        <div class="lane-transit">Ripples into Transpacific lanes with no ME exposure</div>
+      </div>
+      <span class="status-badge status-elevated">Congested</span>
+    </div>
+
+    <div class="lane-card">
+      <div class="lane-info">
+        <div class="lane-name">Panama Canal (Intermodal Hub)</div>
+        <div class="lane-route">Pacific ↔ Atlantic connector</div>
+        <div class="lane-transit">Capacity recovering post-drought</div>
+      </div>
+      <span class="status-badge status-improving">Improving</span>
+    </div>
+
+    <div class="lane-card">
+      <div class="lane-info">
+        <div class="lane-name">Intra-Asia</div>
+        <div class="lane-route">China / SE Asia / India — intra-regional trade</div>
+        <div class="lane-transit">Drewry Intra-Asia index −4% to $1,074</div>
+      </div>
+      <span class="status-badge status-nominal">Softening</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Supply Chain Events 2026 <span>Upcoming H2 calendar</span></div>
+    <div style="overflow-x:auto">
+    <table class="events-table">
+      <thead>
+        <tr><th>Event</th><th>Dates</th><th>Location</th><th>Status</th><th>Attendees</th></tr>
+      </thead>
+      <tbody>
+        <tr class="event-past"><td>Manifest: Future of Logistics</td><td>Feb 9–11</td><td>Las Vegas, NV</td><td><span class="event-pill pill-past">Past</span></td><td>Freight tech startups and logistics innovators</td></tr>
+        <tr class="event-past"><td>TPM26 (Trans-Pacific Maritime)</td><td>Mar 1–4</td><td>Long Beach, CA</td><td><span class="event-pill pill-past">Past</span></td><td>Ocean freight and container shipping professionals</td></tr>
+        <tr class="event-past"><td>MODEX 2026</td><td>Apr 13–16</td><td>Atlanta, GA</td><td><span class="event-pill pill-past">Past</span></td><td>Manufacturing and warehouse automation executives</td></tr>
+        <tr class="event-past"><td>Gartner SC Symposium US</td><td>May 4–6</td><td>Orlando, FL</td><td><span class="event-pill pill-past">Past</span></td><td>Gartner analysts and supply chain VPs</td></tr>
+        <tr class="event-past"><td>WERC Annual Conference</td><td>May 17–20</td><td>Jacksonville, FL</td><td><span class="event-pill pill-past">Past</span></td><td>Warehousing and distribution professionals</td></tr>
+        <tr class="event-past"><td>FreightWaves Future of SC</td><td>Jun 3–4</td><td>Chattanooga, TN</td><td><span class="event-pill pill-past">Past</span></td><td>Freight technology and logistics executives</td></tr>
+        <tr class="event-past"><td>JOC Container Trade Europe</td><td>Jun 9–11</td><td>Rotterdam, Netherlands</td><td><span class="event-pill pill-past">Past</span></td><td>European container shipping professionals</td></tr>
+        <tr class="event-past"><td>Gartner SC Symposium Europe</td><td>Jun 16–18</td><td>Barcelona, Spain</td><td><span class="event-pill pill-past">Past</span></td><td>European supply chain executives</td></tr>
+        <tr><td>GroceryShop 2026</td><td>Sep 22–24</td><td>Las Vegas, NV</td><td><span class="event-pill pill-upcoming">Upcoming</span></td><td>Grocery and food supply chain professionals</td></tr>
+        <tr><td>CHAINge North America</td><td>Sep 29–30</td><td>Long Beach, CA</td><td><span class="event-pill pill-upcoming">Upcoming</span></td><td>Freight and logistics technology executives</td></tr>
+        <tr><td>CSCMP EDGE Conference</td><td>Oct 4–7</td><td>Nashville, TN</td><td><span class="event-pill pill-upcoming">Upcoming</span></td><td>Senior supply chain management professionals</td></tr>
+        <tr><td>Gartner IT Symposium/Xpo</td><td>Oct 19–22</td><td>Orlando, FL</td><td><span class="event-pill pill-upcoming">Upcoming</span></td><td>CIOs and tech leaders influencing SC investment</td></tr>
+        <tr><td>F3: Future of Freight Festival</td><td>Oct 27–28</td><td>Chattanooga, TN</td><td><span class="event-pill pill-upcoming">Upcoming</span></td><td>Freight and supply chain innovators</td></tr>
+        <tr><td>Supply Chain USA (Hanson Wade)</td><td>Nov TBD</td><td>Chicago, IL</td><td><span class="event-pill pill-upcoming">Upcoming</span></td><td>Supply chain strategy and operations executives</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+</div><!-- /ecosystem -->
+
+<!-- ═══════════════════════════════════════════════════════
+     ALL ARTICLES TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-articles" class="tab-pane">
+
+  <div class="section">
+    <div class="section-title">All Articles — Week of June 23–29, 2026 <span>7 articles curated</span></div>
+    <div class="all-articles-list">
+
+      <div class="al-item">
+        <div class="al-badge"><span class="rating-badge r5">Must Act</span></div>
+        <div class="al-body">
+          <div class="al-title"><a href="https://www.federalregister.gov/documents/2026/06/24/2026-12670/indefinite-suspension-of-the-de-minimis-exemption-for-merchandise-arriving-through-all-modes-other" target="_blank">Indefinite Suspension of the De Minimis Exemption (Interim Final Rule)</a></div>
+          <div class="al-meta"><span>U.S. CBP / Federal Register</span><span>June 24, 2026</span><span>Relevance 5/5</span></div>
+          <div class="al-summary">CBP indefinitely suspended the sub-$800 duty-free exemption across ocean, air, and truck; all commercial imports now require formal/informal customs entry and face standard tariffs. Erases the direct-from-factory cost advantage for DTC/emerging brands overnight. Forces a pivot to bulk ocean freight, bonded warehousing, and localized distribution — pushing volume and clearance complexity into Gnosis's wheelhouse.</div>
+        </div>
+      </div>
+
+      <div class="al-item">
+        <div class="al-badge"><span class="rating-badge r5">Must Act</span></div>
+        <div class="al-body">
+          <div class="al-title"><a href="https://www.aljazeera.com/news/2026/6/25/irgc-warns-against-new-hormuz-route-for-ships-what-we-know" target="_blank">IRGC Warns Against New Hormuz Route; Cargo Ship Struck Off Oman</a></div>
+          <div class="al-meta"><span>Al Jazeera / CNBC / Middle East Eye</span><span>June 25, 2026</span><span>Relevance 5/5</span></div>
+          <div class="al-summary">Iran's IRGC rejected a new Oman/IMO-coordinated transit route as "unacceptable" and insisted only Iran-designated routes are authorized; a cargo ship was reportedly struck off Oman on that route. Undercuts the prior week's "reopening" optimism and keeps routing risk and Cape diversions in place. Hard, current proof for the "a deal doesn't restore your ETAs" thesis.</div>
+        </div>
+      </div>
+
+      <div class="al-item">
+        <div class="al-badge"><span class="rating-badge r4">Important</span></div>
+        <div class="al-body">
+          <div class="al-title"><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank">Drewry World Container Index Climbs 5% as Transpacific Rates Jump</a></div>
+          <div class="al-meta"><span>Drewry</span><span>June 25, 2026</span><span>Relevance 4/5</span></div>
+          <div class="al-summary">Drewry's WCI rose 5% to $4,166/40ft, led by the Transpacific — USWC +19% to more than $5,700/FEU and transatlantic-to-USEC +13% to $7,400/FEU; Intra-Asia slipped 4% to $1,074. Only ~24 blank sailings (~3%) are scheduled across major East–West trades through early August, signaling carriers deploying capacity into firm demand. A live buying trigger for importers feeling cost/space pain now.</div>
+        </div>
+      </div>
+
+      <div class="al-item">
+        <div class="al-badge"><span class="rating-badge r4">Important</span></div>
+        <div class="al-body">
+          <div class="al-title"><a href="https://logisticsviewpoints.com/2026/06/26/supply-chain-and-logistics-news-weekly-round-up-june-22nd-26th-2026/" target="_blank">Ocean Freight Spot Rates Surge as Early Peak Collides with Port Congestion</a></div>
+          <div class="al-meta"><span>Locada Intelligence (via Logistics Viewpoints)</span><span>June 26, 2026</span><span>Relevance 4/5</span></div>
+          <div class="al-summary">Asia–USWC spot rates jumped over 23% to cross $6,800/FEU and USEC routes surged past $8,100, on Red Sea/Hormuz diversions, acute port congestion, and holiday-inventory front-loading. Carriers are signaling further GRIs that could push spot rates toward $10,000/FEU on key lanes. Shippers urged to diversify modes, secure capacity early, and brace for a volatile, expensive Q3.</div>
+        </div>
+      </div>
+
+      <div class="al-item">
+        <div class="al-badge"><span class="rating-badge r4">Important</span></div>
+        <div class="al-body">
+          <div class="al-title"><a href="https://safety4sea.com/xeneta-no-hiding-place-for-shippers-as-freight-rates-set-to-rise/" target="_blank">No Hiding Place for Shippers; Networks Seen Recovering ~Mid-September</a></div>
+          <div class="al-meta"><span>Xeneta / SAFETY4SEA / AJOT</span><span>June 2026</span><span>Relevance 4/5</span></div>
+          <div class="al-summary">Xeneta warns accelerating rate increases leave "no hiding place," hitting even larger-volume shippers who normally hold negotiating power. Despite the US–Iran MOU on Hormuz, Xeneta does not expect ocean networks to fully recover until roughly mid-September 2026. Chief analyst Peter Sand notes locking in long-term rates now may limit second-half damage even if shippers pay above budget.</div>
+        </div>
+      </div>
+
+      <div class="al-item">
+        <div class="al-badge"><span class="rating-badge r3">Useful</span></div>
+        <div class="al-body">
+          <div class="al-title"><a href="https://logisticsviewpoints.com/2026/06/24/autonomous-tendering-is-coming-for-the-routing-guide/" target="_blank">Autonomous Tendering Is Coming for the Routing Guide</a></div>
+          <div class="al-meta"><span>Logistics Viewpoints</span><span>June 24, 2026</span><span>Relevance 3/5</span></div>
+          <div class="al-summary">The static routing guide is giving way to dynamic, policy-driven "autonomous tendering" that continuously evaluates live capacity, acceptance rates, spot alternatives, and facility constraints to pick the optimal carrier. Operationalizes procurement expertise at scale rather than replacing contracts or humans. Market validation of Gnosis's execution thesis — and of the agentic-execution vocabulary competitors are adopting.</div>
+        </div>
+      </div>
+
+      <div class="al-item">
+        <div class="al-badge"><span class="rating-badge r3">Useful</span></div>
+        <div class="al-body">
+          <div class="al-title"><a href="https://logisticsviewpoints.com/2026/06/25/the-future-tms-buyer-may-not-be-buying-software-alone/" target="_blank">Beyond Software: Why the Future of TMS Is an Operating Model</a></div>
+          <div class="al-meta"><span>Logistics Viewpoints</span><span>June 25, 2026</span><span>Relevance 3/5</span></div>
+          <div class="al-summary">Buyers are moving beyond TMS-as-software toward integrated operating models, because software alone doesn't generate logistics excellence without process maturity and real-time exception management. TMS, managed transportation, and digital brokerage are converging around bundled tech + embedded capacity + outcome ownership. The "execution gap," not the feature checklist, is now the buying criterion — mirroring Gnosis's pitch.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /articles -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  Updated June 29, 2026 &nbsp;|&nbsp; Gnosis Freight Intelligence Dashboard &nbsp;|&nbsp; Auto-refreshes weekly
+</footer>
 
 <script>
-  document.querySelectorAll('.tab').forEach(function(t){
-    t.addEventListener('click',function(){
-      document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
-      document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
-      t.classList.add('active');
-      document.getElementById(t.dataset.p).classList.add('active');
-    });
-  });
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  var pane = document.getElementById('tab-' + name);
+  if (pane) pane.classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleExpand(el) {
+  var expand = el.closest('.article-header') ? el.closest('.article-header').nextElementSibling : null;
+  if (expand && expand.classList.contains('article-expand')) {
+    var isOpen = expand.classList.toggle('open');
+    el.textContent = isOpen ? 'Collapse ▴' : 'Expand ▾';
+  }
+}
+
+// Set first tab active on load
+document.addEventListener('DOMContentLoaded', function() {
+  var firstBtn = document.querySelector('.tab-btn');
+  var firstPane = document.querySelector('.tab-pane');
+  if (firstBtn) firstBtn.classList.add('active');
+  if (firstPane) firstPane.classList.add('active');
+});
 </script>
+
 </body>
 </html>
